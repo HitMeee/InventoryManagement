@@ -1,0 +1,55 @@
+<UserControl x:Class="InventoryManagement.Views.ProductsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:InventoryManagement.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="900">
+    <UserControl.DataContext>
+        <vm:ProductsViewModel />
+    </UserControl.DataContext>
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+            <Button Content="Làm mới" Command="{Binding LoadCommand}" Margin="0,0,8,0" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding Selected, Mode=TwoWay}" AutoGenerateColumns="False" Grid.Column="0" Margin="0,0,8,0" IsReadOnly="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã" Binding="{Binding Code}" Width="120" />
+                    <DataGridTextColumn Header="Tên" Binding="{Binding Name}" Width="*" />
+                    <DataGridTextColumn Header="Giá" Binding="{Binding Price}" Width="100" />
+                    <DataGridTextColumn Header="Mức cảnh báo" Binding="{Binding ReorderLevel}" Width="120" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock FontWeight="Bold" Text="Thêm sản phẩm" Margin="0,0,0,6" />
+                <TextBlock Text="Mã" />
+                <TextBox Text="{Binding Editing.Code, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Tên" />
+                <TextBox Text="{Binding Editing.Name, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Giá" />
+                <TextBox Text="{Binding Editing.Price, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Mức cảnh báo" />
+                <TextBox Text="{Binding Editing.ReorderLevel, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="Thêm" Command="{Binding AddCommand}" Margin="0,0,8,0" />
+                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Margin="0,0,8,0" />
+                    <Button Content="Xóa" Command="{Binding DeleteCommand}" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
