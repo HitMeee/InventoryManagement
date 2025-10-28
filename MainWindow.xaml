@@ -3,29 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:InventoryManagement.Views"
         Title="Inventory Management" Height="720" Width="1100">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
-        <TabControl x:Name="MainTabControl">
-            <TabItem x:Name="TabProducts" Header="Sản phẩm">
-                <views:ProductsView />
-            </TabItem>
-            <TabItem x:Name="TabInventory" Header="Tồn kho">
-                <views:InventoryView />
-            </TabItem>
-            <TabItem x:Name="TabSuppliers" Header="Nhà cung cấp">
-                <views:SuppliersView />
-            </TabItem>
-            <TabItem x:Name="TabCustomers" Header="Khách hàng">
-                <views:CustomersView />
-            </TabItem>
-            <TabItem x:Name="TabOrders" Header="Đơn hàng">
-                <views:OrdersView />
-            </TabItem>
-            <TabItem x:Name="TabUsers" Header="Người dùng">
-                <views:UsersView />
-            </TabItem>
-            <TabItem x:Name="TabReports" Header="Báo cáo">
-                <views:ReportsView />
-            </TabItem>
-        </TabControl>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left navbar -->
+        <Border Grid.Column="0" Background="#0F274C" Padding="12" CornerRadius="8">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="4">
+                    <TextBlock Text="Quản lý Kho Hàng" FontSize="18" FontWeight="Bold" Foreground="White" Margin="6" />
+                    <TextBlock x:Name="TxtUserInfo" Text="" Foreground="#B7C7D9" FontSize="12" Margin="6,4,6,8" />
+                </StackPanel>
+
+                <StackPanel x:Name="NavPanel" DockPanel.Dock="Top" Margin="6" />
+
+                <StackPanel DockPanel.Dock="Bottom" Margin="6">
+                    <Button x:Name="BtnLogout" Content="Đăng xuất" HorizontalAlignment="Stretch" Click="Logout_Click" Style="{StaticResource PrimaryButtonStyle}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Content host -->
+        <Grid Grid.Column="1" Background="#F4F6F8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Border Style="{StaticResource CardStyle}" Margin="16">
+                    <ContentControl x:Name="ContentHost" />
+                </Border>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
