@@ -144,4 +144,4 @@ C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\Views
 C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\Views\LoginView.baml
 C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\Views\LoginWindow.baml
 c:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\Themes\Styles.baml
-c:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\App.baml
+c:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\InventoryManagement.sourcelink.json
