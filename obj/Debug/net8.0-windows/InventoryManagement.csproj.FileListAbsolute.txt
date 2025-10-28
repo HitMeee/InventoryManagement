@@ -145,3 +145,5 @@ C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\refin
 C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\InventoryManagement.pdb
 C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\InventoryManagement.genruntimeconfig.cache
 C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\ref\InventoryManagement.dll
+C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\Controls\PageShell.g.cs
+C:\Users\Admin\Downloads\GKC#\InventoryManagement\obj\Debug\net8.0-windows\Controls\PageShell.baml
