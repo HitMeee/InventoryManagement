@@ -1,61 +1,76 @@
-# Phân công dự án WPF Quản lý Kho Hàng
+# Phân công dự án WPF Quản lý Kho Hàng (Full-stack theo nhóm chức năng)
 
-## 1. Dev F — Frontend (UI/UX)
-**Nhiệm vụ chính:**
-- [ ] Thiết kế tất cả giao diện: Login, MainWindow, navbar trái, ContentHost, logout
-- [ ] Style & theme app (màu xanh/xám, bo góc, icons, tooltip, hover, highlight)
-- [ ] Bind ViewModels vào Views (MVVM), DataGrid đẹp có search/sort
-- [ ] Auto-refresh UI khi dữ liệu thay đổi
-
-**File chính:**
-- `Views/*.xaml`, `Views/*Window.xaml`
-- `Themes/Styles.xaml`, `App.xaml`
-- `MainWindow.xaml(.cs)`, `LoginView.xaml(.cs)`
-
-**Acceptance Criteria:**
-- Giao diện responsive, màu sắc hài hòa
-- DataGrid có search, sort, tooltip hoạt động
-- Navbar hiển thị đúng menu theo role
-- Auto-refresh UI khi dữ liệu thay đổi
+Mỗi Dev chịu trách nhiệm **toàn bộ (frontend + backend)** cho nhóm chức năng được giao, đảm bảo MVVM hoạt động đầy đủ, UI đẹp, logic chạy đúng và dữ liệu được lưu/đọc từ SQLite.
 
 ---
 
-## 2. Dev B1 — Backend Core & Auth
+## 1. Dev 1 — Quản lý người dùng & Đăng nhập (Auth + User Management)
 **Nhiệm vụ chính:**
-- [ ] Chuẩn hóa DB (`AppDbContext`) và seed 3 tài khoản mẫu
+- [ ] Thiết kế giao diện `LoginView`, `UserManagementView`
 - [ ] Xây dựng `AuthService`: Login, Logout, CurrentUser, hash mật khẩu
-- [ ] Unit test cho `AuthService` & `DbInitializer`
+- [ ] CRUD người dùng (thêm/sửa/xóa tài khoản)
+- [ ] Phân quyền: Admin, Nhân viên kho, Nhân viên bán hàng
+- [ ] Giao diện hiển thị menu và quyền theo role
 
 **File chính:**
-- `Data/AppDbContext.cs`, `Data/DbInitializer.cs`
-- `Services/AuthService.cs`, `Models/User.cs`
+- `Views/LoginView.xaml`, `Views/UsersView.xaml`
+- `Services/AuthService.cs`, `Data/DbInitializer.cs`
+- `Models/User.cs`, `ViewModels/LoginViewModel.cs`, `UsersViewModel.cs`
 
 **Acceptance Criteria:**
-- Đăng nhập hoạt động với 3 role (Admin, Nhân viên kho, Nhân viên bán hàng)
-- Mật khẩu lưu dưới dạng hash
-- API AuthService rõ ràng cho Frontend sử dụng
+- Đăng nhập hoạt động với 3 role
+- Hiển thị menu đúng role sau khi login
+- CRUD user hoạt động, mật khẩu hash trong DB
+- UI gọn gàng, validation hợp lý
 
 ---
 
-## 3. Dev B2 — Backend Business
+## 2. Dev 2 — Quản lý sản phẩm & kho hàng (Products + Inventory)
 **Nhiệm vụ chính:**
-- [ ] Quản lý nghiệp vụ: Products, Inventory (nhập/xuất, tồn kho, low-stock), Orders, Reports
-- [ ] CRUD, validation, transaction, auto-refresh qua events/INotify
-- [ ] Xuất báo cáo CSV/XLSX
+- [ ] Thiết kế `ProductsView`, `InventoryView` (DataGrid, CRUD, search, sort)
+- [ ] Quản lý sản phẩm: thêm, sửa, xóa, tìm kiếm
+- [ ] Quản lý kho: nhập – xuất – kiểm kê hàng hóa
+- [ ] Cảnh báo hàng sắp hết (low-stock)
+- [ ] Auto-refresh khi thay đổi dữ liệu
 
 **File chính:**
-- `Services/ProductService.cs`, `InventoryService.cs`, `OrderService.cs`, `ReportService.cs`
-- `Models/Product.cs`, `InventoryItem.cs`, `Order*.cs`
+- `Views/ProductsView.xaml`, `Views/InventoryView.xaml`
+- `Services/ProductService.cs`, `Services/InventoryService.cs`
+- `Models/Product.cs`, `Models/InventoryItem.cs`
+- `ViewModels/ProductsViewModel.cs`, `InventoryViewModel.cs`
 
 **Acceptance Criteria:**
-- CRUD hoạt động, transactions đúng
-- Reports xuất CSV/XLSX được
-- UI cập nhật khi dữ liệu thay đổi
+- CRUD sản phẩm và kho hoạt động
+- Low-stock alert hiển thị rõ ràng
+- UI đẹp, có search/sort
+- Dữ liệu cập nhật ngay khi thao tác
+
+---
+
+## 3. Dev 3 — Quản lý bán hàng & báo cáo (Orders + Reports)
+**Nhiệm vụ chính:**
+- [ ] Thiết kế `OrdersView`, `ReportsView` (DataGrid, biểu đồ, export)
+- [ ] Quản lý đơn hàng: tạo đơn, kiểm tồn, lưu lịch sử
+- [ ] Báo cáo doanh thu, tồn kho, xuất CSV/XLSX
+- [ ] Auto-refresh khi đơn hàng thay đổi
+- [ ] Giao diện đẹp, có filter thời gian, tìm kiếm
+
+**File chính:**
+- `Views/OrdersView.xaml`, `Views/ReportsView.xaml`
+- `Services/OrderService.cs`, `Services/ReportService.cs`
+- `Models/Order.cs`, `Models/OrderItem.cs`
+- `ViewModels/OrdersViewModel.cs`, `ReportsViewModel.cs`
+
+**Acceptance Criteria:**
+- Đơn hàng xử lý đúng tồn kho
+- Báo cáo xuất file hoạt động
+- Giao diện có lọc, thống kê rõ ràng
+- Auto-refresh khi dữ liệu thay đổi
 
 ---
 
 ## Quy ước làm việc
-- Branch: `feature/<task>` (ví dụ `feature/login-ui`, `feature/auth-hash`)
-- PR nhỏ kèm mô tả + cách test + ảnh chụp
+- Branch: `feature/<chức_năng>` (ví dụ `feature/auth`, `feature/inventory`, `feature/reports`)
+- PR nhỏ, có mô tả + ảnh test UI
 - Merge khi có 1 review và build pass
-- Daily check-in 15’ để đồng bộ
+- Daily check-in 15’ đồng bộ tiến độ
