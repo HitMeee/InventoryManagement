@@ -27,31 +27,50 @@ namespace InventoryManagement.ViewModels
 
         private void ShowRegister()
         {
+            Views.LoginWindow? loginWin = null;
             try
             {
-                // Tìm LoginWindow hiện tại và ẩn nó trong lúc mở đăng ký (không đóng để tránh app shutdown)
-                var loginWin = Application.Current.Windows.Count > 0
-                    ? Application.Current.Windows[0] as Views.LoginWindow
-                    : Application.Current.MainWindow as Views.LoginWindow;
-
-                if (loginWin != null)
+                // Tìm đúng LoginWindow hiện có thay vì lấy phần tử đầu tiên ngẫu nhiên
+                foreach (Window w in Application.Current.Windows)
                 {
-                    loginWin.Hide();
+                    if (w is Views.LoginWindow lw)
+                    {
+                        loginWin = lw;
+                        break;
+                    }
+                }
+                if (loginWin == null)
+                {
+                    loginWin = Application.Current.MainWindow as Views.LoginWindow;
                 }
 
-                var win = new Views.RegisterWindow();
-                if (loginWin != null) win.Owner = loginWin;
-                var result = win.ShowDialog();
+                // Ẩn login trong lúc mở đăng ký (không đóng để tránh app shutdown)
+                loginWin?.Hide();
 
-                if (loginWin != null)
+                var win = new Views.RegisterWindow
                 {
-                    loginWin.Show();
-                    loginWin.Activate();
-                }
+                    Owner = loginWin
+                };
+                // Đảm bảo modal đúng và căn giữa theo Owner
+                win.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                win.ShowDialog();
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"Lỗi khi mở cửa sổ đăng ký: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Luôn hiển thị lại Login sau khi đóng đăng ký để tránh cảm giác app bị tắt
+                if (loginWin != null)
+                {
+                    try
+                    {
+                        loginWin.Show();
+                        loginWin.Activate();
+                    }
+                    catch { /* ignore */ }
+                }
             }
         }
 

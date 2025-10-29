@@ -1,8 +1,8 @@
 <Window x:Class="InventoryManagement.Views.RegisterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Đăng ký tài khoản" Height="500" Width="780" MinHeight="420" MinWidth="680"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
+    Title="Đăng ký tài khoản" Height="500" Width="780" MinHeight="420" MinWidth="680"
+    WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanResize">
     <Window.Resources>
         <Style x:Key="InputBoxStyle" TargetType="Border">
             <Setter Property="CornerRadius" Value="8" />
