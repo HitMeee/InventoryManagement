@@ -29,6 +29,8 @@ namespace InventoryManagement.ViewModels
     public Warehouse? SelectedWarehouse { get => _selectedWarehouse; set { _selectedWarehouse = value; OnPropertyChanged(nameof(SelectedWarehouse)); } }
     private bool _isRoleEditable = true;
     public bool IsRoleEditable { get => _isRoleEditable; set { _isRoleEditable = value; OnPropertyChanged(nameof(IsRoleEditable)); } }
+    private bool _isSensitiveEditable = true;
+    public bool IsSensitiveEditable { get => _isSensitiveEditable; set { _isSensitiveEditable = value; OnPropertyChanged(nameof(IsSensitiveEditable)); } }
 
         public ICommand LoadCommand { get; }
     public ICommand AddCommand { get; }
@@ -98,9 +100,16 @@ namespace InventoryManagement.ViewModels
                 {
                     roleForUpdate = SelectedRole;
                 }
-                _service.UpdateUserAndMapping(Selected.Id, Editing.Username?.Trim(), hash, roleForUpdate, SelectedWarehouse?.Id);
+                // Không cho phép thay đổi tài khoản/mật khẩu của người dùng khác
+                var currentId = Services.AuthService.CurrentUser?.Id ?? -1;
+                string? newUsername = (Selected.Id == currentId) ? (Editing.Username?.Trim()) : null;
+                string? newPasswordHash = (Selected.Id == currentId) ? hash : null;
+                _service.UpdateUserAndMapping(Selected.Id, newUsername, newPasswordHash, roleForUpdate, SelectedWarehouse?.Id);
                 // refresh item
-                Selected.Username = Editing.Username;
+                if (Selected.Id == currentId)
+                {
+                    Selected.Username = Editing.Username;
+                }
                 Selected.RoleDisplay = roleForUpdate;
                 Selected.WarehouseDisplay = SelectedWarehouse?.Name ?? Selected.WarehouseDisplay;
                 Selected.WarehouseId = SelectedWarehouse?.Id;
@@ -131,6 +140,9 @@ namespace InventoryManagement.ViewModels
                 SelectedWarehouse = Warehouses.FirstOrDefault(w => w.Id == Selected.WarehouseId.Value) ?? Warehouses.FirstOrDefault();
             }
             IsRoleEditable = !string.Equals(Selected.RoleDisplay, "Chủ kho", StringComparison.OrdinalIgnoreCase);
+            // Chỉ cho phép sửa username/password nếu đang sửa chính tài khoản của mình hoặc đang thêm mới
+            var currentId = Services.AuthService.CurrentUser?.Id ?? -1;
+            IsSensitiveEditable = (Selected.Id == currentId);
         }
     }
 
