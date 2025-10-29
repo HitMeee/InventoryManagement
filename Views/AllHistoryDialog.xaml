@@ -1,0 +1,201 @@
+<Window x:Class="InventoryManagement.Views.AllHistoryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lịch sử tất cả giao dịch" 
+        Width="900" Height="700"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Lịch sử tất cả giao dịch nhập/xuất" 
+                   FontSize="20" FontWeight="Bold" 
+                   Foreground="#0F274C" 
+                   Margin="0,0,0,20" 
+                   HorizontalAlignment="Center"/>
+
+        <!-- Filter -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="Lọc theo loại:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="SemiBold"/>
+            <ComboBox x:Name="CboTransactionType" Width="150" Height="30" 
+                      SelectionChanged="CboTransactionType_SelectionChanged">
+                <ComboBoxItem Content="Tất cả" Tag="ALL" IsSelected="True"/>
+                <ComboBoxItem Content="Nhập hàng" Tag="IMPORT"/>
+                <ComboBoxItem Content="Xuất hàng" Tag="EXPORT"/>
+            </ComboBox>
+            
+            <TextBlock Text="Kho:" VerticalAlignment="Center" Margin="20,0,10,0" FontWeight="SemiBold"/>
+            <ComboBox x:Name="CboWarehouseFilter" Width="200" Height="30" 
+                      DisplayMemberPath="Name" 
+                      SelectedValuePath="Id"
+                      SelectionChanged="CboWarehouseFilter_SelectionChanged"/>
+        </StackPanel>
+
+        <!-- History DataGrid -->
+        <DataGrid Grid.Row="2" x:Name="DgAllHistory" 
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  Background="White"
+                  AlternatingRowBackground="#F8F9FA"
+                  SelectionMode="Single"
+                  RowHeight="35"
+                  FontSize="13"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  BorderBrush="#BBDEFB"
+                  BorderThickness="1"
+                  VerticalAlignment="Stretch"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="13"/>
+                    <Setter Property="Background" Value="#E3F2FD"/>
+                    <Setter Property="Foreground" Value="#1565C0"/>
+                    <Setter Property="Padding" Value="10,8"/>
+                    <Setter Property="BorderBrush" Value="#BBDEFB"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="MinHeight" Value="35"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="8,5"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                            <Setter Property="Foreground" Value="#1565C0"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Ngày" Binding="{Binding CreatedAt, StringFormat='dd/MM/yyyy HH:mm'}" Width="140" MinWidth="120">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#666"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <DataGridTemplateColumn Header="Loại" Width="80" MinWidth="70">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="3" Padding="8,3" HorizontalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TransactionType}" Value="IMPORT">
+                                                <Setter Property="Background" Value="#E8F5E8"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TransactionType}" Value="EXPORT">
+                                                <Setter Property="Background" Value="#FFF3E0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding TransactionTypeDisplay}" 
+                                           FontWeight="SemiBold" FontSize="12">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TransactionType}" Value="IMPORT">
+                                                    <Setter Property="Foreground" Value="#2E7D32"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TransactionType}" Value="EXPORT">
+                                                    <Setter Property="Foreground" Value="#F57C00"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTextColumn Header="Sản phẩm" Binding="{Binding ProductName}" Width="2*" MinWidth="150">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Padding" Value="8,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="1.5*" MinWidth="100">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Padding" Value="8,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="100" MinWidth="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="80" MinWidth="60">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Summary and Close Button -->
+        <Grid Grid.Row="3" Margin="0,15,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock x:Name="TxtSummary" Grid.Column="0" 
+                       Text="Tổng: 0 giao dịch" 
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold" FontSize="14"
+                       Foreground="#666"/>
+            
+            <Button Grid.Column="1" Content="Đóng" 
+                    Width="100" Height="35" 
+                    Background="#757575" Foreground="White" 
+                    BorderThickness="0" FontWeight="SemiBold"
+                    Click="BtnClose_Click"/>
+        </Grid>
+    </Grid>
+</Window>

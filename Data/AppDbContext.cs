@@ -59,6 +59,7 @@ namespace InventoryManagement.Data
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserWarehouseRole> UserWarehouseRoles { get; set; }
+        public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -76,6 +77,7 @@ namespace InventoryManagement.Data
             modelBuilder.Entity<Warehouse>().ToTable("warehouses");
             modelBuilder.Entity<Product>().ToTable("products");
             modelBuilder.Entity<UserWarehouseRole>().ToTable("user_warehouse_roles");
+            modelBuilder.Entity<InventoryTransaction>().ToTable("inventory_transactions");
 
             // Configure relationships
             modelBuilder.Entity<UserWarehouseRole>()
@@ -98,6 +100,18 @@ namespace InventoryManagement.Data
                 .HasOne(p => p.Warehouse)
                 .WithMany(w => w.Products)
                 .HasForeignKey(p => p.WarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<InventoryTransaction>()
+                .HasOne(it => it.Product)
+                .WithMany()
+                .HasForeignKey(it => it.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<InventoryTransaction>()
+                .HasOne(it => it.User)
+                .WithMany()
+                .HasForeignKey(it => it.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

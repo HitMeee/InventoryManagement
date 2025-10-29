@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SLUiAdlWrXs=",
+  "dgSpecHash": "hocVhyWRk+Q=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AddWarehouses\\AddWarehouses.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AddWarehouses\\AddWarehouses.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\8.0.8\\microsoft.data.sqlite.8.0.8.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.8\\microsoft.data.sqlite.core.8.0.8.nupkg.sha512",

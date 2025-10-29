@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jnz2llJEc2M=",
+  "dgSpecHash": "aFRCWn86DdY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\SetHashedPasswords\\SetHashedPasswords.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\SetHashedPasswords\\SetHashedPasswords.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\9.0.10\\microsoft.data.sqlite.9.0.10.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.10\\microsoft.data.sqlite.core.9.0.10.nupkg.sha512",
