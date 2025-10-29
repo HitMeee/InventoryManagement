@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Linq;
+using InventoryManagement.Services;
 
 namespace InventoryManagement.Views
 {
@@ -107,6 +109,38 @@ namespace InventoryManagement.Views
                 tb.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
                 _isSearchPlaceholder = true;
                 RefreshFilter();
+            }
+        }
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DataContext is InventoryManagement.ViewModels.UsersViewModel vm)
+                {
+                    // Use existing roles and filtered warehouses from ViewModel
+                    var roles = vm.Roles.ToList();
+                    var warehouses = vm.Warehouses.ToList();
+
+                    var dialog = new UserFormDialog(roles, warehouses)
+                    {
+                        Owner = Window.GetWindow(this)
+                    };
+
+                    if (dialog.ShowDialog() == true)
+                    {
+                        var hash = PasswordHelper.HashPassword(dialog.Password);
+                        var service = new UserService();
+                        service.AddWithRoleAndWarehouse(dialog.Username, hash, dialog.SelectedRole, dialog.WarehouseId);
+
+                        vm.Load();
+                        MessageBox.Show("Thêm người dùng thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi thêm người dùng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
