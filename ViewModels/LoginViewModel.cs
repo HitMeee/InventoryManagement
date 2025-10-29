@@ -27,15 +27,50 @@ namespace InventoryManagement.ViewModels
 
         private void ShowRegister()
         {
+            Views.LoginWindow? loginWin = null;
             try
             {
-                var win = new Views.RegisterWindow();
-                win.Owner = Application.Current.MainWindow;
+                // Tìm đúng LoginWindow hiện có thay vì lấy phần tử đầu tiên ngẫu nhiên
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w is Views.LoginWindow lw)
+                    {
+                        loginWin = lw;
+                        break;
+                    }
+                }
+                if (loginWin == null)
+                {
+                    loginWin = Application.Current.MainWindow as Views.LoginWindow;
+                }
+
+                // Ẩn login trong lúc mở đăng ký (không đóng để tránh app shutdown)
+                loginWin?.Hide();
+
+                var win = new Views.RegisterWindow
+                {
+                    Owner = loginWin
+                };
+                // Đảm bảo modal đúng và căn giữa theo Owner
+                win.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 win.ShowDialog();
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"Lỗi khi mở cửa sổ đăng ký: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Luôn hiển thị lại Login sau khi đóng đăng ký để tránh cảm giác app bị tắt
+                if (loginWin != null)
+                {
+                    try
+                    {
+                        loginWin.Show();
+                        loginWin.Activate();
+                    }
+                    catch { /* ignore */ }
+                }
             }
         }
 

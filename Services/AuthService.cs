@@ -8,7 +8,8 @@ namespace InventoryManagement.Services
 {
     public static class AuthService
     {
-        public static User? CurrentUser { get; private set; }
+    public static User? CurrentUser { get; private set; }
+        public static List<int> CurrentUserWarehouseIds { get; private set; } = new();
 
         public enum AuthResult
         {
@@ -58,8 +59,13 @@ namespace InventoryManagement.Services
                     ok = string.Equals(user.PasswordHash ?? string.Empty, password ?? string.Empty);
                 }
                 if (!ok) return AuthResult.WrongPassword;
-                var roles = ctx.UserWarehouseRoles.Where(uw => uw.UserId == user.Id).Select(uw => uw.Role).ToList();
-                if (roles.Contains("admin", StringComparer.OrdinalIgnoreCase))
+                var maps = ctx.UserWarehouseRoles.Where(uw => uw.UserId == user.Id).ToList();
+                var roles = maps.Select(uw => uw.Role).ToList();
+                if (roles.Contains("owner", StringComparer.OrdinalIgnoreCase))
+                {
+                    user.Role = "Chủ kho";
+                }
+                else if (roles.Contains("admin", StringComparer.OrdinalIgnoreCase))
                 {
                     user.Role = "Admin";
                 }
@@ -75,6 +81,7 @@ namespace InventoryManagement.Services
                 if (!string.IsNullOrWhiteSpace(role) && !string.Equals(user.Role ?? string.Empty, role, StringComparison.OrdinalIgnoreCase)) return AuthResult.WrongRole;
 
                 CurrentUser = user;
+                CurrentUserWarehouseIds = maps.Select(m => m.WarehouseId).Distinct().ToList();
                 return AuthResult.Success;
             }
             catch (Exception ex)
@@ -96,5 +103,8 @@ namespace InventoryManagement.Services
         }
 
         public static void Logout() => CurrentUser = null;
+        
+        public static bool IsAdmin() => string.Equals(CurrentUser?.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+        public static bool IsOwner() => string.Equals(CurrentUser?.Role, "Chủ kho", StringComparison.OrdinalIgnoreCase);
     }
 }
