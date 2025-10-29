@@ -13,7 +13,7 @@ namespace InventoryManagement.ViewModels
         private readonly WarehouseService _warehouseService = new();
 
         public ObservableCollection<UserListItem> Users { get; } = new();
-        public List<string> Roles { get; } = new List<string> { "Admin", "Nhân viên kho" };
+    public List<string> Roles { get; } = new List<string> { "Chủ kho", "Admin", "Nhân viên kho" };
         public ObservableCollection<Warehouse> Warehouses { get; } = new();
 
     private UserListItem? _selected;
@@ -35,8 +35,8 @@ namespace InventoryManagement.ViewModels
         public UsersViewModel()
         {
             LoadCommand = new RelayCommand(_ => Load());
-            AddCommand = new RelayCommand(_ => Add(), _ => !string.IsNullOrWhiteSpace(Editing.Username) && SelectedWarehouse != null);
-            UpdateCommand = new RelayCommand(_ => Update(), _ => Selected != null && !string.IsNullOrWhiteSpace(Editing.Username) && SelectedWarehouse != null);
+            AddCommand = new RelayCommand(_ => Add(), _ => !string.IsNullOrWhiteSpace(Editing.Username) && SelectedWarehouse != null && !string.IsNullOrWhiteSpace(SelectedRole));
+            UpdateCommand = new RelayCommand(_ => Update(), _ => Selected != null && !string.IsNullOrWhiteSpace(Editing.Username) && SelectedWarehouse != null && !string.IsNullOrWhiteSpace(SelectedRole));
             DeleteCommand = new RelayCommand(_ => Delete(), _ => Selected != null);
             Load();
         }
@@ -66,14 +66,13 @@ namespace InventoryManagement.ViewModels
         {
             try
             {
-                var isAdmin = string.Equals(SelectedRole, "Admin", StringComparison.OrdinalIgnoreCase);
                 var pwdHash = Services.PasswordHelper.HashPassword(NewPassword ?? string.Empty);
-                var added = _service.AddWithRoleAndWarehouse(Editing.Username.Trim(), pwdHash, isAdmin, SelectedWarehouse!.Id);
+                var added = _service.AddWithRoleAndWarehouse(Editing.Username.Trim(), pwdHash, SelectedRole, SelectedWarehouse!.Id);
                 Users.Add(new UserListItem
                 {
                     Id = added.Id,
                     Username = added.Username,
-                    RoleDisplay = isAdmin ? "Admin" : "Nhân viên kho",
+                    RoleDisplay = SelectedRole,
                     WarehouseDisplay = SelectedWarehouse!.Name,
                     WarehouseId = SelectedWarehouse!.Id
                 });
@@ -88,12 +87,11 @@ namespace InventoryManagement.ViewModels
             if (Selected == null) return;
             try
             {
-                var isAdmin = string.Equals(SelectedRole, "Admin", StringComparison.OrdinalIgnoreCase);
                 string? hash = string.IsNullOrWhiteSpace(NewPassword) ? null : Services.PasswordHelper.HashPassword(NewPassword);
-                _service.UpdateUserAndMapping(Selected.Id, Editing.Username?.Trim(), hash, isAdmin, SelectedWarehouse?.Id);
+                _service.UpdateUserAndMapping(Selected.Id, Editing.Username?.Trim(), hash, SelectedRole, SelectedWarehouse?.Id);
                 // refresh item
                 Selected.Username = Editing.Username;
-                Selected.RoleDisplay = isAdmin ? "Admin" : "Nhân viên kho";
+                Selected.RoleDisplay = SelectedRole;
                 Selected.WarehouseDisplay = SelectedWarehouse?.Name ?? Selected.WarehouseDisplay;
                 Selected.WarehouseId = SelectedWarehouse?.Id;
                 OnPropertyChanged(nameof(Users));

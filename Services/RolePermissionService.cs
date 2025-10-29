@@ -4,10 +4,8 @@ using System.Linq;
 
 namespace InventoryManagement.Services
 {
-    // Simple permission service mapping roles to allowed features.
     public static class RolePermissionService
     {
-        // Feature keys used across the UI
         public static class Features
         {
             public const string ManageUsers = "ManageUsers";
@@ -26,9 +24,24 @@ namespace InventoryManagement.Services
             public const string Logout = "Logout";
         }
 
-        // Role -> allowed features
         private static readonly Dictionary<string, HashSet<string>> _map = new(StringComparer.OrdinalIgnoreCase)
         {
+            ["Chủ kho"] = new HashSet<string>
+            {
+                Features.ManageUsers,
+                Features.ManageProducts,
+                Features.SearchProducts,
+                Features.ManageInventory,
+                Features.LowStockAlert,
+                Features.ViewStock,
+                Features.ManageOrders,
+                Features.ViewInOutHistory,
+                Features.ViewStockReports,
+                Features.ViewSalesReports,
+                Features.ExportReports,
+                Features.SystemConfig,
+                Features.Logout
+            },
             ["Admin"] = new HashSet<string>
             {
                 Features.ManageUsers,

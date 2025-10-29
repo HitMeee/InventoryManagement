@@ -30,11 +30,20 @@ namespace InventoryManagement.Services
             var e = ctx.Users.Find(id);
             if (e == null) return false;
 
-            // Prevent deleting a user who has admin role mapping
-            var isAdmin = ctx.UserWarehouseRoles.Any(uw => uw.UserId == id && uw.Role.ToLower() == "admin");
-            if (isAdmin)
+            // Check role mappings of target
+            var targetMaps = ctx.UserWarehouseRoles.Where(uw => uw.UserId == id).ToList();
+            var isAdmin = targetMaps.Any(uw => string.Equals(uw.Role, "admin", StringComparison.OrdinalIgnoreCase));
+            var isOwner = targetMaps.Any(uw => string.Equals(uw.Role, "owner", StringComparison.OrdinalIgnoreCase));
+
+            // Never allow deleting an Owner account
+            if (isOwner)
             {
-                throw new InvalidOperationException("Không thể xoá tài khoản Admin.");
+                throw new InvalidOperationException("Không thể xoá tài khoản Chủ kho.");
+            }
+            // Only Owner can delete Admin accounts
+            if (isAdmin && !Services.AuthService.IsOwner())
+            {
+                throw new InvalidOperationException("Chỉ Chủ kho mới được xoá tài khoản Admin.");
             }
 
             // Remove role mappings first to keep FK integrity
@@ -59,8 +68,9 @@ namespace InventoryManagement.Services
             foreach (var u in users)
             {
                 var umaps = maps.Where(m => m.UserId == u.Id).ToList();
+                var hasOwner = umaps.Any(m => string.Equals(m.Role, "owner", StringComparison.OrdinalIgnoreCase));
                 var isAdmin = umaps.Any(m => string.Equals(m.Role, "admin", StringComparison.OrdinalIgnoreCase));
-                var roleDisp = isAdmin ? "Admin" : (umaps.Any() ? "Nhân viên kho" : "");
+                var roleDisp = hasOwner ? "Chủ kho" : (isAdmin ? "Admin" : (umaps.Any() ? "Nhân viên kho" : ""));
                 string whDisp = "";
                 int? whId = null;
                 if (umaps.Count > 0)
@@ -75,19 +85,19 @@ namespace InventoryManagement.Services
             return list;
         }
 
-        public User AddWithRoleAndWarehouse(string username, string passwordHash, bool isAdmin, int warehouseId)
+        public User AddWithRoleAndWarehouse(string username, string passwordHash, string roleDisplay, int warehouseId)
         {
             using var ctx = new AppDbContext(_conn);
             var u = new User { Username = username, PasswordHash = passwordHash };
             ctx.Users.Add(u);
             ctx.SaveChanges();
-            var role = isAdmin ? "admin" : "staff";
+            var role = NormalizeRoleToDb(roleDisplay);
             ctx.UserWarehouseRoles.Add(new UserWarehouseRole { UserId = u.Id, WarehouseId = warehouseId, Role = role, CreatedAt = DateTime.UtcNow });
             ctx.SaveChanges();
             return u;
         }
 
-        public void UpdateUserAndMapping(int userId, string? newUsername, string? newPasswordHash, bool? isAdmin, int? warehouseId)
+        public void UpdateUserAndMapping(int userId, string? newUsername, string? newPasswordHash, string? roleDisplay, int? warehouseId)
         {
             using var ctx = new AppDbContext(_conn);
             var u = ctx.Users.FirstOrDefault(x => x.Id == userId) ?? throw new InvalidOperationException("User không tồn tại");
@@ -99,12 +109,19 @@ namespace InventoryManagement.Services
             var oldMaps = ctx.UserWarehouseRoles.Where(m => m.UserId == userId).ToList();
             if (oldMaps.Count > 0) ctx.UserWarehouseRoles.RemoveRange(oldMaps);
 
-            if (warehouseId.HasValue && isAdmin.HasValue)
+            if (warehouseId.HasValue && !string.IsNullOrWhiteSpace(roleDisplay))
             {
-                var role = isAdmin.Value ? "admin" : "staff";
+                var role = NormalizeRoleToDb(roleDisplay!);
                 ctx.UserWarehouseRoles.Add(new UserWarehouseRole { UserId = userId, WarehouseId = warehouseId.Value, Role = role, CreatedAt = DateTime.UtcNow });
             }
             ctx.SaveChanges();
+        }
+
+        private static string NormalizeRoleToDb(string roleDisplay)
+        {
+            if (string.Equals(roleDisplay, "Chủ kho", StringComparison.OrdinalIgnoreCase)) return "owner";
+            if (string.Equals(roleDisplay, "Admin", StringComparison.OrdinalIgnoreCase)) return "admin";
+            return "staff";
         }
     }
 }

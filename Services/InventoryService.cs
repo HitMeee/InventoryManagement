@@ -15,7 +15,7 @@ namespace InventoryManagement.Services
             using var ctx = new AppDbContext(_conn);
             var q = ctx.InventoryItems.Include(ii => ii.Product).Include(ii => ii.Warehouse).AsNoTracking().AsQueryable();
             var cu = AuthService.CurrentUser;
-            if (cu != null && !string.Equals(cu.Role, "Admin", StringComparison.OrdinalIgnoreCase))
+            if (cu != null && !(AuthService.IsAdmin() || AuthService.IsOwner()))
             {
                 // Restrict staff to their assigned warehouses
                 var ids = AuthService.CurrentUserWarehouseIds;
