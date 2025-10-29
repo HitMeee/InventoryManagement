@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hA80Z8xS9Ro=",
+  "dgSpecHash": "OpoHpvWYPKQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\GKC#\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\9.0.10\\microsoft.data.sqlite.9.0.10.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.10\\microsoft.data.sqlite.core.9.0.10.nupkg.sha512",

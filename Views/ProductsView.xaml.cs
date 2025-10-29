@@ -10,6 +10,9 @@ namespace InventoryManagement.Views
 {
     public partial class ProductsView : UserControl
     {
+        private bool isSearchPlaceholder = true;
+        private const string SearchPlaceholder = "Tìm kiếm theo tên sản phẩm hoặc đơn vị...";
+        
         public class ProductDisplay
         {
             public int Id { get; set; }
@@ -74,7 +77,25 @@ namespace InventoryManagement.Views
                 
                 var warehouseId = (int)CboWarehouse.SelectedValue;
                 using var db = new AppDbContext();
-                var products = db.Products.Where(p => p.WarehouseId == warehouseId).OrderBy(p => p.Name).ToList();
+                
+                // Get search text (ignore placeholder)
+                var search = "";
+                if (!string.IsNullOrEmpty(searchText) && searchText != SearchPlaceholder)
+                {
+                    search = searchText.Trim().ToLower();
+                }
+                
+                var productsQuery = db.Products.Where(p => p.WarehouseId == warehouseId);
+                
+                // Apply smart search if search text is provided
+                if (!string.IsNullOrEmpty(search))
+                {
+                    productsQuery = productsQuery.Where(p => 
+                        p.Name.ToLower().Contains(search) ||
+                        (p.Unit != null && p.Unit.ToLower().Contains(search)));
+                }
+                
+                var products = productsQuery.OrderBy(p => p.Name).ToList();
 
                 var productDisplays = products.Select(p => new ProductDisplay
                 {
@@ -230,12 +251,43 @@ namespace InventoryManagement.Views
         {
             try
             {
-                var searchText = ((TextBox)sender).Text;
-                LoadProducts(searchText);
+                var textBox = (TextBox)sender;
+                var searchText = textBox.Text;
+                
+                // Only search if it's not the placeholder text
+                if (!isSearchPlaceholder)
+                {
+                    LoadProducts(searchText);
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void TxtSearch_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            if (isSearchPlaceholder)
+            {
+                textBox.Text = "";
+                textBox.FontStyle = FontStyles.Normal;
+                textBox.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+                isSearchPlaceholder = false;
+            }
+        }
+
+        private void TxtSearch_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                textBox.Text = SearchPlaceholder;
+                textBox.FontStyle = FontStyles.Italic;
+                textBox.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
+                isSearchPlaceholder = true;
+                LoadProducts(); // Reset to show all products
             }
         }
     }

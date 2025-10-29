@@ -338,11 +338,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Downloads\\GKC#\\InventoryManagement\\Tools\\SetHashedPasswords\\SetHashedPasswords.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\SetHashedPasswords\\SetHashedPasswords.csproj",
       "projectName": "SetHashedPasswords",
-      "projectPath": "C:\\Users\\Admin\\Downloads\\GKC#\\InventoryManagement\\Tools\\SetHashedPasswords\\SetHashedPasswords.csproj",
+      "projectPath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\SetHashedPasswords\\SetHashedPasswords.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Downloads\\GKC#\\InventoryManagement\\Tools\\SetHashedPasswords\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\SetHashedPasswords\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
