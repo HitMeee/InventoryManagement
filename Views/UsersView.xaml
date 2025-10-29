@@ -28,7 +28,8 @@
             <DataGrid ItemsSource="{Binding Users}" SelectedItem="{Binding Selected, Mode=TwoWay}" AutoGenerateColumns="False" Grid.Column="0" Margin="0,0,8,0">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Tên Tài khoản" Binding="{Binding Username}" />
-                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding Role}" />
+                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding RoleDisplay}" />
+                    <DataGridTextColumn Header="Kho đang làm việc" Binding="{Binding WarehouseDisplay}" />
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -40,8 +41,11 @@
                 <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" />
                 <TextBlock Text="Chức vụ" />
                 <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" />
+                <TextBlock Text="Kho" />
+                <ComboBox ItemsSource="{Binding Warehouses}" SelectedItem="{Binding SelectedWarehouse}" DisplayMemberPath="Name" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <Button Content="Thêm" Command="{Binding AddCommand}" Margin="0,0,8,0" />
+                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Margin="0,0,8,0" />
                     <Button Content="Xóa" Command="{Binding DeleteCommand}" />
                 </StackPanel>
             </StackPanel>
