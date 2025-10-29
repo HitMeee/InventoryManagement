@@ -27,18 +27,18 @@
 
             <DataGrid ItemsSource="{Binding Users}" SelectedItem="{Binding Selected, Mode=TwoWay}" AutoGenerateColumns="False" Grid.Column="0" Margin="0,0,8,0">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Username" Binding="{Binding Username}" />
-                    <DataGridTextColumn Header="Role" Binding="{Binding Role}" />
+                    <DataGridTextColumn Header="Tên Tài khoản" Binding="{Binding Username}" />
+                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding Role}" />
                 </DataGrid.Columns>
             </DataGrid>
 
             <StackPanel Grid.Column="1">
                 <TextBlock FontWeight="Bold" Text="Quản lý người dùng" Margin="0,0,0,6" />
-                <TextBlock Text="Username" />
+                <TextBlock Text="Tên tài khoản" />
                 <TextBox Text="{Binding Editing.Username, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Text="Password" />
+                <TextBlock Text="Mật khẩu" />
                 <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" />
-                <TextBlock Text="Role" />
+                <TextBlock Text="Chức vụ" />
                 <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <Button Content="Thêm" Command="{Binding AddCommand}" Margin="0,0,8,0" />

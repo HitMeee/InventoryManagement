@@ -1,4 +1,5 @@
 using InventoryManagement.Data;
+using Microsoft.EntityFrameworkCore;
 using InventoryManagement.Models;
 using System.Linq;
 using System;
@@ -18,7 +19,7 @@ namespace InventoryManagement.Services
             Error
         }
 
-        public static AuthResult Authenticate(string username, string password, string role, string? connectionString = null)
+        public static AuthResult Authenticate(string username, string password, string? role = null, string? connectionString = null)
         {
             try
             {
@@ -27,22 +28,69 @@ namespace InventoryManagement.Services
                 role = role ?? string.Empty;
 
                 using var ctx = new AppDbContext(connectionString);
-                var user = ctx.Users.FirstOrDefault(u => u.Username == username);
-                if (user == null) return AuthResult.UserNotFound;
-                if (user.PasswordHash != password) return AuthResult.WrongPassword;
-                if (!string.Equals(user.Role ?? string.Empty, role, StringComparison.OrdinalIgnoreCase)) return AuthResult.WrongRole;
+                try
+                {
+                    var dbg = ctx.Database.GetDbConnection()?.ConnectionString ?? "(unknown)";
+                    var logPath = System.IO.Path.Combine(AppContext.BaseDirectory, "auth_debug.log");
+                    System.IO.File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] Authenticate called for '{username}'. DbConnectionString={dbg}\n");
+                }
+                catch { }
+                var unameNormalized = (username ?? string.Empty).ToLowerInvariant();
+                var user = ctx.Users.AsEnumerable().FirstOrDefault(u => (u.Username ?? string.Empty).ToLowerInvariant() == unameNormalized);
+                if (user == null)
+                {
+                    try
+                    {
+                        var available = string.Join(",", ctx.Users.Select(u => (u.Username ?? string.Empty)).Take(50));
+                        var logPath = System.IO.Path.Combine(AppContext.BaseDirectory, "auth_debug.log");
+                        System.IO.File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] UserNotFound for '{username}'. AvailableUsers={available}\n");
+                    }
+                    catch { }
+                    return AuthResult.UserNotFound;
+                }
+                var ok = false;
+                if (!string.IsNullOrWhiteSpace(user.PasswordHash) && user.PasswordHash.Split('.').Length == 3)
+                {
+                    ok = PasswordHelper.VerifyPassword(password, user.PasswordHash);
+                }
+                else
+                {
+                    ok = string.Equals(user.PasswordHash ?? string.Empty, password ?? string.Empty);
+                }
+                if (!ok) return AuthResult.WrongPassword;
+                var roles = ctx.UserWarehouseRoles.Where(uw => uw.UserId == user.Id).Select(uw => uw.Role).ToList();
+                if (roles.Contains("admin", StringComparer.OrdinalIgnoreCase))
+                {
+                    user.Role = "Admin";
+                }
+                else if (roles.Any())
+                {
+                    user.Role = "Nhân viên kho"; 
+                }
+                else
+                {
+                    user.Role = "";
+                }
+
+                if (!string.IsNullOrWhiteSpace(role) && !string.Equals(user.Role ?? string.Empty, role, StringComparison.OrdinalIgnoreCase)) return AuthResult.WrongRole;
 
                 CurrentUser = user;
                 return AuthResult.Success;
             }
-            catch
+            catch (Exception ex)
             {
+                try
+                {
+                    var log = System.IO.Path.Combine(AppContext.BaseDirectory, "auth_error.log");
+                    var txt = $"[{DateTime.UtcNow:O}] Exception during Authenticate: {ex}\n";
+                    System.IO.File.AppendAllText(log, txt);
+                }
+                catch { }
                 return AuthResult.Error;
             }
         }
 
-        // Backwards-compatible wrapper
-        public static bool Login(string username, string password, string role, string? connectionString = null)
+        public static bool Login(string username, string password, string? role = null, string? connectionString = null)
         {
             return Authenticate(username, password, role, connectionString) == AuthResult.Success;
         }

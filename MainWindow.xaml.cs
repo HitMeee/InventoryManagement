@@ -57,7 +57,6 @@ namespace InventoryManagement
 
                 navPanel.Children.Clear();
 
-                // define menu entries and required feature
                 var menu = new List<MenuEntry>
                 {
                     new MenuEntry("home","Trang chủ", RolePermissionService.Features.ViewStock, () => CreateHomeControl()),
@@ -82,7 +81,6 @@ namespace InventoryManagement
                     var btn = new Button { Content = title, Tag = key, Style = (Style)FindResource("NavButtonStyle"), Margin = new Thickness(4), HorizontalAlignment = HorizontalAlignment.Stretch };
                     btn.Click += (s, ea) =>
                     {
-                        // reset styles
                         foreach (var child in navPanel.Children.OfType<Button>()) child.Style = (Style)FindResource("NavButtonStyle");
                         btn.Style = (Style)FindResource("NavButtonSelected");
                         try
@@ -99,7 +97,6 @@ namespace InventoryManagement
                     if (first == null) first = btn;
                 }
 
-                // select first available
                 first?.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
             catch (Exception ex)
@@ -119,18 +116,26 @@ namespace InventoryManagement
             try
             {
                 Services.AuthService.Logout();
+
+                var previousShutdown = Application.Current.ShutdownMode;
+                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
                 var login = new Views.LoginWindow();
+                Application.Current.MainWindow = login;
+
+                this.Close();
+
                 var r = login.ShowDialog();
                 if (r == true && Services.AuthService.CurrentUser != null)
                 {
-                    // reopen main window with new user
                     var main = new MainWindow(Services.AuthService.CurrentUser);
                     Application.Current.MainWindow = main;
+                    Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
                     main.Show();
-                    this.Close();
                 }
                 else
                 {
+                    Application.Current.ShutdownMode = previousShutdown;
                     Application.Current.Shutdown();
                 }
             }

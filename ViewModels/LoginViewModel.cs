@@ -11,12 +11,10 @@ namespace InventoryManagement.ViewModels
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public List<string> Roles { get; } = new List<string> { "Admin", "Nhân viên kho", "Nhân viên bán hàng" };
-        public string SelectedRole { get; set; } = "Admin";
 
         public ICommand LoginCommand { get; }
         public ICommand CancelCommand { get; }
-    public ICommand ShowUsersCommand { get; }
+    public ICommand RegisterCommand { get; }
 
         public event Action<User?>? LoginSucceeded;
 
@@ -24,14 +22,28 @@ namespace InventoryManagement.ViewModels
         {
             LoginCommand = new RelayCommand(_ => Login());
             CancelCommand = new RelayCommand(_ => Application.Current.Shutdown());
-            ShowUsersCommand = new RelayCommand(_ => ShowUsers());
+            RegisterCommand = new RelayCommand(_ => ShowRegister());
+        }
+
+        private void ShowRegister()
+        {
+            try
+            {
+                var win = new Views.RegisterWindow();
+                win.Owner = Application.Current.MainWindow;
+                win.ShowDialog();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở cửa sổ đăng ký: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Login()
         {
             try
             {
-                var result = AuthService.Authenticate(Username?.Trim() ?? string.Empty, Password ?? string.Empty, SelectedRole);
+                var result = AuthService.Authenticate(Username?.Trim() ?? string.Empty, Password ?? string.Empty);
                 switch (result)
                 {
                     case AuthService.AuthResult.Success:
@@ -47,37 +59,30 @@ namespace InventoryManagement.ViewModels
                         MessageBox.Show("Vai trò không đúng. Vui lòng chọn vai trò chính xác.", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Warning);
                         break;
                     default:
-                        MessageBox.Show("Lỗi không xác định khi xác thực.", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Error);
+                            try
+                            {
+                                var log = System.IO.Path.Combine(AppContext.BaseDirectory, "auth_error.log");
+                                if (System.IO.File.Exists(log))
+                                {
+                                    var lines = System.IO.File.ReadAllLines(log);
+                                    var tail = string.Join("\n", lines.Length > 20 ? lines[^20..] : lines);
+                                    MessageBox.Show($"Lỗi không xác định khi xác thực.\n\nChi tiết (cuối file log):\n{tail}", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Lỗi không xác định khi xác thực.", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Lỗi không xác định khi xác thực.", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         break;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi đăng nhập: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ShowUsers()
-        {
-            try
-            {
-                using var ctx = new Data.AppDbContext();
-                var users = ctx.Users.Select(u => new { u.Username, u.PasswordHash, u.Role }).ToList();
-                if (!users.Any())
-                {
-                    MessageBox.Show("Chưa có user nào trong CSDL.", "DBG Users", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-                var sb = new System.Text.StringBuilder();
-                foreach (var u in users)
-                {
-                    sb.AppendLine($"{u.Username} \t {u.PasswordHash} \t {u.Role}");
-                }
-                MessageBox.Show(sb.ToString(), "DBG Users", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi đọc Users: {ex.Message}", "DBG Users", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
