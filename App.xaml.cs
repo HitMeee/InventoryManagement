@@ -18,17 +18,7 @@ namespace InventoryManagement
 
             var login = new Views.LoginWindow();
             var result = login.ShowDialog();
-            // DEBUG: show why we may not open MainWindow
-            try
-            {
-                var cu = Services.AuthService.CurrentUser;
-                var cuInfo = cu != null ? $"{cu.Username} ({cu.Role})" : "<null>";
-                MessageBox.Show($"Login dialog returned: {result}\nAuthService.CurrentUser: {cuInfo}", "DEBUG Login", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show($"DEBUG: Exception checking current user: {ex.Message}", "DEBUG Login", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            // Debug logging removed: proceed to open MainWindow if login succeeded.
 
             if (result == true && Services.AuthService.CurrentUser != null)
             {

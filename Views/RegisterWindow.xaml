@@ -1,0 +1,33 @@
+<Window x:Class="InventoryManagement.Views.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Đăng ký tài khoản" Height="320" Width="420" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Đăng ký tài khoản" FontSize="18" FontWeight="Bold" Margin="4" />
+
+        <StackPanel Grid.Row="1" Margin="0,12,0,0">
+            <TextBlock Text="Tên đăng nhập" />
+            <TextBox x:Name="TxtUsername" />
+            <TextBlock Text="Mật khẩu" Margin="0,8,0,0" />
+            <PasswordBox x:Name="Pwd" />
+            <TextBlock Text="Vai trò" Margin="0,8,0,0" />
+            <ComboBox x:Name="CmbRole" SelectedIndex="0">
+                <ComboBoxItem>Admin</ComboBoxItem>
+                <ComboBoxItem>Nhân viên kho</ComboBoxItem>
+                <ComboBoxItem>Nhân viên bán hàng</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button x:Name="BtnSave" Content="Lưu" Width="90" Margin="0,0,8,0" Click="BtnSave_Click" />
+            <Button Content="Hủy" Width="80" Click="BtnCancel_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

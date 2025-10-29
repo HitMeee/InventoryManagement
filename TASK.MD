@@ -6,7 +6,7 @@ Mỗi Dev chịu trách nhiệm **toàn bộ (frontend + backend)** cho nhóm ch
 
 ## 1. Dev 1 — Quản lý người dùng & Đăng nhập (Auth + User Management)
 **Nhiệm vụ chính:**
-- [ ] Thiết kế giao diện `LoginView`, `UserManagementView`
+- [x] Thiết kế giao diện `LoginView`, `UserManagementView`
 - [ ] Xây dựng `AuthService`: Login, Logout, CurrentUser, hash mật khẩu
 - [ ] CRUD người dùng (thêm/sửa/xóa tài khoản)
 - [ ] Phân quyền: Admin, Nhân viên kho, Nhân viên bán hàng

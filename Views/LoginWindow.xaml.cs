@@ -25,10 +25,6 @@ namespace InventoryManagement.Views
 
         private void OnLoginSucceeded(Models.User? user)
         {
-            // show a small confirmation (debug) so user sees success and we know the event fired
-            var name = user?.Username ?? "(unknown)";
-            var role = user?.Role ?? "(unknown)";
-            MessageBox.Show($"Đăng nhập thành công: {name} ({role})", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Information);
             // set dialog result true so App.OnStartup can open MainWindow
             this.SelectedRole = user?.Role;
             this.DialogResult = true;

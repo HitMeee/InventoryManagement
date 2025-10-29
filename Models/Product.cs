@@ -19,7 +19,6 @@ namespace InventoryManagement.Models
 
         public int ReorderLevel { get; set; }
 
-        // navigation
         public List<InventoryItem>? InventoryItems { get; set; }
     }
 }

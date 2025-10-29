@@ -5,42 +5,121 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:InventoryManagement.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="360" d:DesignWidth="640">
+
     <UserControl.DataContext>
         <vm:LoginViewModel />
     </UserControl.DataContext>
-    <Grid Background="#F5F7FA">
-        <Border Width="380" Height="260" Background="White" CornerRadius="8" Padding="16" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Ellipse Width="36" Height="36" Fill="#2E7D32" />
-                    <TextBlock Text="  Quản lý kho" FontWeight="Bold" FontSize="18" VerticalAlignment="Center" />
+
+    <UserControl.Resources>
+        <Style x:Key="InputBoxStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Background" Value="#FFF" />
+            <Setter Property="Padding" Value="6" />
+            <Setter Property="Margin" Value="0,6,0,6" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#22000000" BlurRadius="6" ShadowDepth="1" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Secondary button style (rounded corners for Cancel) -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Foreground" Value="#111827" />
+            <Setter Property="Background" Value="#E5E7EB" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="8" Background="{TemplateBinding Background}" Padding="6" BorderBrush="#D1D5DB" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Background gradient -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFEEF2FF" Offset="0" />
+                <GradientStop Color="#FFF6FBFF" Offset="1" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+    <!-- Center card (increased size to avoid clipping) -->
+    <Border Width="680" Height="420" MinWidth="520" MinHeight="320" CornerRadius="18" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: branding / illustration -->
+                <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12">
+                    <!-- Warehouse icon (vector) -->
+                    <Viewbox Width="64" Height="64">
+                        <Canvas Width="64" Height="64">
+                            <!-- roof -->
+                            <Path Data="M4,28 L32,8 L60,28 Z" Fill="#2563EB" />
+                            <!-- building body -->
+                            <Path Data="M8,28 L8,52 L56,52 L56,28 Z" Fill="#2563EB" Opacity="0.95" />
+                            <!-- door -->
+                            <Path Data="M26,36 L26,52 L38,52 L38,36 Z" Fill="#073763" />
+                            <!-- door line -->
+                            <Path Data="M32,36 L32,52" Stroke="#0A3A6E" StrokeThickness="1" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Quản lý kho" FontSize="18" FontWeight="Bold" Margin="0,10,0,0" HorizontalAlignment="Center" />
+                    <TextBlock Text="Hệ thống quản lý kho bán hàng" FontSize="12" Foreground="#6B7280" TextAlignment="Center" Margin="0,8,0,0" />
                 </StackPanel>
 
-                <TextBlock Text="Đăng nhập" FontSize="16" FontWeight="Bold" Margin="0,12,0,6" />
+                <!-- Right: login form -->
+                <StackPanel Grid.Column="1" Margin="8" VerticalAlignment="Center">
+                    <TextBlock Text="Đăng nhập" FontSize="20" FontWeight="Bold" Foreground="#111827" />
+                    <TextBlock Text="Nhập thông tin tài khoản của bạn" FontSize="12" Foreground="#6B7280" Margin="0,6,0,12" />
 
-                <TextBlock Text="Tên đăng nhập" />
-                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Text="Mật khẩu" Margin="0,6,0,0" />
-                <PasswordBox x:Name="pwd" PasswordChanged="PasswordBox_PasswordChanged" />
+                    <Border Style="{StaticResource InputBoxStyle}">
+                        <DockPanel>
+                            <TextBlock Text="👤" FontSize="14" VerticalAlignment="Center" Margin="4" />
+                            <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="4"/>
+                        </DockPanel>
+                    </Border>
 
-                <TextBlock Text="Vai trò" Margin="0,6,0,0" />
-                <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole, Mode=TwoWay}" Width="200">
-                    <ComboBox.Style>
-                        <Style TargetType="ComboBox">
-                            <Setter Property="IsEditable" Value="False" />
-                        </Style>
-                    </ComboBox.Style>
-                </ComboBox>
+                    <Border Style="{StaticResource InputBoxStyle}">
+                        <DockPanel>
+                            <TextBlock Text="🔒" FontSize="14" VerticalAlignment="Center" Margin="4" />
+                            <PasswordBox x:Name="pwd" PasswordChanged="PasswordBox_PasswordChanged" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="4" />
+                        </DockPanel>
+                    </Border>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                    <Button Content="Đăng nhập" Command="{Binding LoginCommand}" Width="100" Margin="0,0,8,0" />
-                    <Button Content="Thoát" Command="{Binding CancelCommand}" Width="80" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,12,0,0">
+                        <Button Command="{Binding LoginCommand}" Style="{StaticResource PrimaryButton}" Background="#2563EB" Content="Đăng nhập" Width="140" />
+                        <Button Command="{Binding CancelCommand}" Content="Thoát" Margin="8,0,0,0" Style="{StaticResource SecondaryButton}" />
+                        <Button Command="{Binding RegisterCommand}" Content="Đăng ký" Margin="12,0,0,0" Width="110" Style="{StaticResource SecondaryButton}" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,12,0,0">
-                    <Button Content="(DBG) Liệt kê users" Command="{Binding ShowUsersCommand}" Width="160" />
-                </StackPanel>
-            </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
