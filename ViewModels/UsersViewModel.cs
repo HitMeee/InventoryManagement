@@ -48,13 +48,23 @@ namespace InventoryManagement.ViewModels
 
         public void Load()
         {
-            // Load warehouses
+            // Load warehouses. If current user is not Admin/Owner, only show their assigned warehouses
             Warehouses.Clear();
-            foreach (var w in _warehouseService.GetAll()) Warehouses.Add(w);
+            var allWh = _warehouseService.GetAll();
+            var isAdminOrOwner = Services.AuthService.IsAdmin() || Services.AuthService.IsOwner();
+            var currentIds = Services.AuthService.CurrentUserWarehouseIds;
+            if (isAdminOrOwner)
+            {
+                foreach (var w in allWh) Warehouses.Add(w);
+            }
+            else
+            {
+                foreach (var w in allWh.Where(w => currentIds.Contains(w.Id))) Warehouses.Add(w);
+            }
             if (Warehouses.Count > 0) SelectedWarehouse = Warehouses[0];
 
             Users.Clear();
-            foreach (var t in _service.GetAllWithDetails())
+            foreach (var t in _service.GetAllWithDetails(isAdminOrOwner, currentIds))
             {
                 Users.Add(new UserListItem
                 {
