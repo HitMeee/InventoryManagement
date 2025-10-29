@@ -5,50 +5,193 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:InventoryManagement.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="900">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <UserControl.DataContext>
         <vm:UsersViewModel />
     </UserControl.DataContext>
-    <Grid Margin="8">
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
-            <Button Content="Làm mới" Command="{Binding LoadCommand}" />
-        </StackPanel>
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Quản lý Người dùng"
+                   FontSize="28" FontWeight="Bold" Foreground="#0F274C"
+                   Margin="0,0,0,20"/>
 
-        <Grid Grid.Row="1">
+        <!-- Toolbar: Refresh + Search -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <DataGrid ItemsSource="{Binding Users}" SelectedItem="{Binding Selected, Mode=TwoWay}" AutoGenerateColumns="False" Grid.Column="0" Margin="0,0,8,0">
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Button Content="⟳ Làm mới" Padding="15,8" Command="{Binding LoadCommand}"
+                        Background="#1976D2" Foreground="White" BorderThickness="0" Margin="0,0,10,0"
+                        FontWeight="SemiBold" FontSize="14"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#666"/>
+                <TextBox x:Name="TxtSearch" Width="320" Height="35"
+                         TextChanged="TxtSearch_TextChanged"
+                         VerticalContentAlignment="Center"
+                         FontStyle="Italic"
+                         Foreground="Gray"
+                         GotFocus="TxtSearch_GotFocus"
+                         LostFocus="TxtSearch_LostFocus"
+                         Text="Tìm kiếm theo tên, vai trò hoặc kho..."
+                         BorderBrush="#BBDEFB"
+                         BorderThickness="2"
+                         Padding="12,8"
+                         FontSize="14"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content: DataGrid + Form Panel -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- DataGrid styled like other views -->
+            <DataGrid x:Name="DgUsers" Grid.Column="0"
+                      ItemsSource="{Binding Users}"
+                      SelectedItem="{Binding Selected, Mode=TwoWay}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column"
+                      Background="White"
+                      AlternatingRowBackground="#F8F9FA"
+                      SelectionMode="Single"
+                      RowHeight="38"
+                      FontSize="13"
+                      HorizontalGridLinesBrush="#E0E0E0"
+                      BorderBrush="#BBDEFB"
+                      BorderThickness="1"
+                      VerticalAlignment="Stretch"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Background" Value="#E3F2FD"/>
+                        <Setter Property="Foreground" Value="#1565C0"/>
+                        <Setter Property="Padding" Value="10,8"/>
+                        <Setter Property="BorderBrush" Value="#BBDEFB"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="MinHeight" Value="40"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="8,5"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                                <Setter Property="Foreground" Value="#1565C0"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Tên Tài khoản" Binding="{Binding Username}" />
-                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding RoleDisplay}" />
-                    <DataGridTextColumn Header="Kho đang làm việc" Binding="{Binding WarehouseDisplay}" />
+                    <DataGridTextColumn Header="Tên tài khoản" Binding="{Binding Username}" Width="2*" MinWidth="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Padding" Value="8,0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding RoleDisplay}" Width="*" MinWidth="120">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Foreground" Value="#2E7D32"/>
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Kho đang làm việc" Binding="{Binding WarehouseDisplay}" Width="2*" MinWidth="160">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Padding" Value="8,0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock FontWeight="Bold" Text="Quản lý người dùng" Margin="0,0,0,6" />
-                <TextBlock Text="Tên tài khoản" />
-                <TextBox Text="{Binding Editing.Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsSensitiveEditable}" />
-                <TextBlock Text="Mật khẩu" />
-                <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" IsEnabled="{Binding IsSensitiveEditable}" />
-                <TextBlock Text="Chức vụ" />
-                <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" IsEnabled="{Binding IsRoleEditable}" />
-                <TextBlock Text="Kho" />
-                <ComboBox ItemsSource="{Binding Warehouses}" SelectedItem="{Binding SelectedWarehouse}" DisplayMemberPath="Name" />
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <Button Content="Thêm" Command="{Binding AddCommand}" Margin="0,0,8,0" />
-                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Margin="0,0,8,0" />
-                    <Button Content="Xóa" Command="{Binding DeleteCommand}" />
-                </StackPanel>
-            </StackPanel>
+            <!-- Right panel: Form card -->
+            <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="12" BorderBrush="#BBDEFB" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Thông tin người dùng" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+
+                    <TextBlock Grid.Row="1" Text="Tên tài khoản" Margin="0,0,0,5"/>
+                    <TextBox Grid.Row="2" Text="{Binding Editing.Username, UpdateSourceTrigger=PropertyChanged}" 
+                             IsEnabled="{Binding IsSensitiveEditable}"
+                             Height="32" Padding="8,4" BorderBrush="#CCCCCC" BorderThickness="1"/>
+
+                    <TextBlock Grid.Row="3" Text="Mật khẩu" Margin="0,10,0,5"/>
+                    <PasswordBox Grid.Row="4" PasswordChanged="PasswordBox_PasswordChanged" 
+                                 IsEnabled="{Binding IsSensitiveEditable}"
+                                 Height="32" Padding="8,4"/>
+
+                    <TextBlock Grid.Row="5" Text="Chức vụ" Margin="0,10,0,5"/>
+                    <ComboBox Grid.Row="6" ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}"
+                              IsEnabled="{Binding IsRoleEditable}"
+                              Height="32" Padding="8,4"/>
+
+                    <TextBlock Grid.Row="7" Text="Kho" Margin="0,10,0,5"/>
+                    <ComboBox Grid.Row="8" ItemsSource="{Binding Warehouses}" SelectedItem="{Binding SelectedWarehouse}" 
+                              DisplayMemberPath="Name" Height="32" Padding="8,4"/>
+
+            <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="0,15,0,0">
+                        <Button Content="+ Thêm" Command="{Binding AddCommand}" Margin="0,0,10,0" 
+                                Padding="15,8" Background="#1976D2" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
+                        <Button Content="✏️ Cập nhật" Command="{Binding UpdateCommand}" Margin="0,0,10,0"
+                                Padding="15,8" Background="#F57C00" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
+                        <Button Content="🗑️ Xóa" Command="{Binding DeleteCommand}"
+                                Padding="15,8" Background="#D32F2F" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
