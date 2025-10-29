@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dPxyvjMG4I0=",
+  "dgSpecHash": "8qY4moI8fMk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\GKC#\\InventoryManagement\\Tools\\SchemaCheck\\SchemaCheck.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\SchemaCheck\\SchemaCheck.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\9.0.10\\microsoft.data.sqlite.9.0.10.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.10\\microsoft.data.sqlite.core.9.0.10.nupkg.sha512",

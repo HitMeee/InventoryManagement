@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3h/scQ9AP0M=",
+  "dgSpecHash": "hGmxD/r2J7s=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\GKC#\\InventoryManagement\\Tools\\RemovePlainColumn\\RemovePlainColumn.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\RemovePlainColumn\\RemovePlainColumn.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\9.0.10\\microsoft.data.sqlite.9.0.10.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.10\\microsoft.data.sqlite.core.9.0.10.nupkg.sha512",
