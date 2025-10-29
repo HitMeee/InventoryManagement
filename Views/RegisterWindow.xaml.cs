@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Windows;
 using InventoryManagement.Data;
 using InventoryManagement.Models;
@@ -9,6 +10,22 @@ namespace InventoryManagement.Views
         public RegisterWindow()
         {
             InitializeComponent();
+            this.Loaded += RegisterWindow_Loaded;
+        }
+
+        private void RegisterWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using var ctx = new AppDbContext();
+                var warehouses = ctx.Warehouses.OrderBy(w => w.Name).ToList();
+                CmbWarehouse.ItemsSource = warehouses;
+                if (warehouses.Count > 0) CmbWarehouse.SelectedIndex = 0;
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách kho: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -21,12 +38,17 @@ namespace InventoryManagement.Views
         {
             var username = TxtUsername.Text?.Trim() ?? string.Empty;
             var password = Pwd.Password ?? string.Empty;
-            var roleItem = CmbRole.SelectedItem as System.Windows.Controls.ComboBoxItem;
-            var role = roleItem?.Content?.ToString() ?? "Nhân viên bán hàng";
+            var wh = CmbWarehouse.SelectedItem as Warehouse;
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Vui lòng nhập tên đăng nhập và mật khẩu.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (wh == null)
+            {
+                MessageBox.Show("Vui lòng chọn kho hàng.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -40,18 +62,31 @@ namespace InventoryManagement.Views
                     return;
                 }
 
+                // Không cho phép tạo thêm tài khoản Admin nếu đã tồn tại bất kỳ Admin nào
+                var anyAdmin = ctx.UserWarehouseRoles.Any(x => x.Role == "admin");
+                if (anyAdmin)
+                {
+                    MessageBox.Show("Đã tồn tại tài khoản Admin. Không thể tạo thêm tài khoản Admin mới.", "Không thể tạo Admin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 var hashed = InventoryManagement.Services.PasswordHelper.HashPassword(password);
                 var user = new User { Username = username, PasswordHash = hashed };
                 ctx.Users.Add(user);
                 ctx.SaveChanges();
 
-                // Optionally map the selected role to user_warehouse_roles.
-                // Map UI role labels to stored role values: Admin -> 'admin', others -> 'staff'
-                var mapped = (role?.ToLowerInvariant().StartsWith("admin") ?? false) ? "admin" : "staff";
-                // If a warehouse selection control exists in the UI, use it; otherwise, assign no warehouse role now.
-                // For safety we won't create a user_warehouse_roles without a valid warehouse id.
+                // Gán vai trò admin cho kho đã chọn
+                var map = new UserWarehouseRole
+                {
+                    UserId = user.Id,
+                    WarehouseId = wh.Id,
+                    Role = "admin",
+                    CreatedAt = System.DateTime.UtcNow
+                };
+                ctx.UserWarehouseRoles.Add(map);
+                ctx.SaveChanges();
 
-                MessageBox.Show("Đăng ký thành công.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Đăng ký Admin thành công. Vui lòng đăng nhập lại.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.DialogResult = true;
                 this.Close();
             }

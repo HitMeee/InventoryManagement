@@ -29,9 +29,25 @@ namespace InventoryManagement.ViewModels
         {
             try
             {
+                // Tìm LoginWindow hiện tại và ẩn nó trong lúc mở đăng ký (không đóng để tránh app shutdown)
+                var loginWin = Application.Current.Windows.Count > 0
+                    ? Application.Current.Windows[0] as Views.LoginWindow
+                    : Application.Current.MainWindow as Views.LoginWindow;
+
+                if (loginWin != null)
+                {
+                    loginWin.Hide();
+                }
+
                 var win = new Views.RegisterWindow();
-                win.Owner = Application.Current.MainWindow;
-                win.ShowDialog();
+                if (loginWin != null) win.Owner = loginWin;
+                var result = win.ShowDialog();
+
+                if (loginWin != null)
+                {
+                    loginWin.Show();
+                    loginWin.Activate();
+                }
             }
             catch (System.Exception ex)
             {
