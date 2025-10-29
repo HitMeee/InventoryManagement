@@ -57,7 +57,7 @@ namespace InventoryManagement.Services
             return ctx.SaveChanges() > 0;
         }
 
-        public List<(User user, string roleDisplay, string warehouseDisplay, int? warehouseId)> GetAllWithDetails()
+        public List<(User user, string roleDisplay, string warehouseDisplay, int? warehouseId)> GetAllWithDetails(bool isAdminOrOwner, List<int>? currentUserWarehouseIds)
         {
             using var ctx = new AppDbContext(_conn);
             var users = ctx.Users.AsNoTracking().OrderBy(u => u.Username).ToList();
@@ -68,6 +68,18 @@ namespace InventoryManagement.Services
             foreach (var u in users)
             {
                 var umaps = maps.Where(m => m.UserId == u.Id).ToList();
+                // If the current user is not admin/owner, skip users who don't share a warehouse mapping
+                if (!isAdminOrOwner)
+                {
+                    if (currentUserWarehouseIds == null || currentUserWarehouseIds.Count == 0)
+                    {
+                        // cannot see any users
+                        continue;
+                    }
+                    var shared = umaps.Any(m => currentUserWarehouseIds.Contains(m.WarehouseId));
+                    if (!shared) continue;
+                }
+
                 var hasOwner = umaps.Any(m => string.Equals(m.Role, "owner", StringComparison.OrdinalIgnoreCase));
                 var isAdmin = umaps.Any(m => string.Equals(m.Role, "admin", StringComparison.OrdinalIgnoreCase));
                 var roleDisp = hasOwner ? "Chủ kho" : (isAdmin ? "Admin" : (umaps.Any() ? "Nhân viên kho" : ""));
@@ -75,7 +87,6 @@ namespace InventoryManagement.Services
                 int? whId = null;
                 if (umaps.Count > 0)
                 {
-                    // Pick the first mapping for display; concat names if many
                     var names = umaps.Select(m => wmap.TryGetValue(m.WarehouseId, out var nm) ? nm : m.WarehouseId.ToString()).ToList();
                     whDisp = string.Join(", ", names);
                     whId = umaps.First().WarehouseId;
