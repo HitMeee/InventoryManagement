@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SetPlainPasswords")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79d3814e3e9df9da1deedec6228086d9dfbbbe4f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+056d0c1393ed417286d18d0dbd9752fcc0bc8ffd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SetPlainPasswords")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SetPlainPasswords")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

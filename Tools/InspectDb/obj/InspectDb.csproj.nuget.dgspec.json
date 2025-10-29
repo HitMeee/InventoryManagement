@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj": {}
+    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj": {
+    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj",
         "projectName": "InspectDb",
-        "projectPath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj",
+        "projectPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\InspectDb\\InspectDb.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\InspectDb\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\InspectDb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
