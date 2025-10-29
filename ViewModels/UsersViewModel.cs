@@ -13,7 +13,8 @@ namespace InventoryManagement.ViewModels
         private readonly WarehouseService _warehouseService = new();
 
         public ObservableCollection<UserListItem> Users { get; } = new();
-    public List<string> Roles { get; } = new List<string> { "Chủ kho", "Admin", "Nhân viên kho" };
+        // Khóa chức năng đăng ký Chủ kho tại giao diện Người dùng: loại bỏ "Chủ kho" khỏi danh sách chọn
+        public List<string> Roles { get; } = new List<string> { "Admin", "Nhân viên kho" };
         public ObservableCollection<Warehouse> Warehouses { get; } = new();
 
     private UserListItem? _selected;
@@ -24,8 +25,12 @@ namespace InventoryManagement.ViewModels
 
         public string NewPassword { get; set; } = string.Empty;
         public string SelectedRole { get; set; } = "Admin";
-        private Warehouse? _selectedWarehouse;
-        public Warehouse? SelectedWarehouse { get => _selectedWarehouse; set { _selectedWarehouse = value; OnPropertyChanged(nameof(SelectedWarehouse)); } }
+    private Warehouse? _selectedWarehouse;
+    public Warehouse? SelectedWarehouse { get => _selectedWarehouse; set { _selectedWarehouse = value; OnPropertyChanged(nameof(SelectedWarehouse)); } }
+    private bool _isRoleEditable = true;
+    public bool IsRoleEditable { get => _isRoleEditable; set { _isRoleEditable = value; OnPropertyChanged(nameof(IsRoleEditable)); } }
+    private bool _isSensitiveEditable = true;
+    public bool IsSensitiveEditable { get => _isSensitiveEditable; set { _isSensitiveEditable = value; OnPropertyChanged(nameof(IsSensitiveEditable)); } }
 
         public ICommand LoadCommand { get; }
     public ICommand AddCommand { get; }
@@ -88,10 +93,24 @@ namespace InventoryManagement.ViewModels
             try
             {
                 string? hash = string.IsNullOrWhiteSpace(NewPassword) ? null : Services.PasswordHelper.HashPassword(NewPassword);
-                _service.UpdateUserAndMapping(Selected.Id, Editing.Username?.Trim(), hash, SelectedRole, SelectedWarehouse?.Id);
+                // Không cho phép đổi sang vai trò "Chủ kho" tại màn Người dùng.
+                // Nếu user hiện tại là Chủ kho, giữ nguyên vai trò (cho phép đổi kho/mật khẩu/tên).
+                var roleForUpdate = Selected.RoleDisplay;
+                if (!string.Equals(Selected.RoleDisplay, "Chủ kho", StringComparison.OrdinalIgnoreCase))
+                {
+                    roleForUpdate = SelectedRole;
+                }
+                // Không cho phép thay đổi tài khoản/mật khẩu của người dùng khác
+                var currentId = Services.AuthService.CurrentUser?.Id ?? -1;
+                string? newUsername = (Selected.Id == currentId) ? (Editing.Username?.Trim()) : null;
+                string? newPasswordHash = (Selected.Id == currentId) ? hash : null;
+                _service.UpdateUserAndMapping(Selected.Id, newUsername, newPasswordHash, roleForUpdate, SelectedWarehouse?.Id);
                 // refresh item
-                Selected.Username = Editing.Username;
-                Selected.RoleDisplay = SelectedRole;
+                if (Selected.Id == currentId)
+                {
+                    Selected.Username = Editing.Username;
+                }
+                Selected.RoleDisplay = roleForUpdate;
                 Selected.WarehouseDisplay = SelectedWarehouse?.Name ?? Selected.WarehouseDisplay;
                 Selected.WarehouseId = SelectedWarehouse?.Id;
                 OnPropertyChanged(nameof(Users));
@@ -120,6 +139,10 @@ namespace InventoryManagement.ViewModels
             {
                 SelectedWarehouse = Warehouses.FirstOrDefault(w => w.Id == Selected.WarehouseId.Value) ?? Warehouses.FirstOrDefault();
             }
+            IsRoleEditable = !string.Equals(Selected.RoleDisplay, "Chủ kho", StringComparison.OrdinalIgnoreCase);
+            // Chỉ cho phép sửa username/password nếu đang sửa chính tài khoản của mình hoặc đang thêm mới
+            var currentId = Services.AuthService.CurrentUser?.Id ?? -1;
+            IsSensitiveEditable = (Selected.Id == currentId);
         }
     }
 

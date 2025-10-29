@@ -36,11 +36,11 @@
             <StackPanel Grid.Column="1">
                 <TextBlock FontWeight="Bold" Text="Quản lý người dùng" Margin="0,0,0,6" />
                 <TextBlock Text="Tên tài khoản" />
-                <TextBox Text="{Binding Editing.Username, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Text="{Binding Editing.Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsSensitiveEditable}" />
                 <TextBlock Text="Mật khẩu" />
-                <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" />
+                <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" IsEnabled="{Binding IsSensitiveEditable}" />
                 <TextBlock Text="Chức vụ" />
-                <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" />
+                <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" IsEnabled="{Binding IsRoleEditable}" />
                 <TextBlock Text="Kho" />
                 <ComboBox ItemsSource="{Binding Warehouses}" SelectedItem="{Binding SelectedWarehouse}" DisplayMemberPath="Name" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">

@@ -57,6 +57,14 @@ class Program
         try
         {
             Dump("SELECT id, user_id, warehouse_id, role, created_at FROM user_warehouse_roles;");
+            using var cmd2 = conn.CreateCommand();
+            cmd2.CommandText = "SELECT COUNT(1) FROM user_warehouse_roles WHERE role='owner'";
+            var c = Convert.ToInt32(cmd2.ExecuteScalar());
+            Console.WriteLine($"\nOwner mappings count: {c}");
+            using var cmd3 = conn.CreateCommand();
+            cmd3.CommandText = "SELECT sql FROM sqlite_master WHERE type='table' AND name='user_warehouse_roles'";
+            var ddl = cmd3.ExecuteScalar()?.ToString() ?? "(no ddl)";
+            Console.WriteLine("\nuser_warehouse_roles DDL: \n" + ddl);
         }
         catch (Exception ex) { Console.WriteLine("Cannot read user_warehouse_roles table: " + ex.Message); }
 
