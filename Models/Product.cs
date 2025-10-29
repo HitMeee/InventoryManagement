@@ -3,22 +3,31 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryManagement.Models
 {
+    [Table("products")]
     public class Product
     {
         [Key]
+        [Column("id")]
         public int Id { get; set; }
 
-        [Required, MaxLength(50)]
-        public string Code { get; set; } = string.Empty;
+        [Column("warehouse_id")]
+        public int WarehouseId { get; set; }
 
+        [Column("name")]
         [Required, MaxLength(200)]
         public string Name { get; set; } = string.Empty;
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
+        [Column("quantity")]
+        public int Quantity { get; set; } = 0;
 
-        public int ReorderLevel { get; set; }
+        [Column("unit")]
+        [MaxLength(50)]
+        public string Unit { get; set; } = "cái";
 
-        public List<InventoryItem>? InventoryItems { get; set; }
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation property
+        public Warehouse? Warehouse { get; set; }
     }
 }

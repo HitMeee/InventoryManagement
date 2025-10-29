@@ -59,13 +59,9 @@ namespace InventoryManagement
 
                 var menu = new List<MenuEntry>
                 {
-                    new MenuEntry("home","Trang chủ", RolePermissionService.Features.ViewStock, () => CreateHomeControl()),
-                    new MenuEntry("orders","Đơn hàng", RolePermissionService.Features.ManageOrders, () => (UserControl)new Views.OrdersView()),
-                    new MenuEntry("customers","Khách hàng", RolePermissionService.Features.ManageCustomers, () => (UserControl)new Views.CustomersView()),
-                    new MenuEntry("stock","Kiểm tra tồn kho", RolePermissionService.Features.ViewStock, () => (UserControl)new Views.InventoryView()),
+                    new MenuEntry("home","Trang chủ", RolePermissionService.Features.ViewStock, () => CreateDashboard()),
                     new MenuEntry("products","Sản phẩm", RolePermissionService.Features.ManageProducts, () => (UserControl)new Views.ProductsView()),
-                    new MenuEntry("inventory","Kho hàng", RolePermissionService.Features.ManageInventory, () => (UserControl)new Views.InventoryView()),
-                    new MenuEntry("reports","Báo cáo", RolePermissionService.Features.ViewStockReports, () => (UserControl)new Views.ReportsView()),
+                    new MenuEntry("warehouses","Kho hàng", RolePermissionService.Features.ViewStock, () => (UserControl)new Views.WarehousesView()),
                     new MenuEntry("users","Người dùng", RolePermissionService.Features.ManageUsers, () => (UserControl)new Views.UsersView())
                 };
 
@@ -89,7 +85,9 @@ namespace InventoryManagement
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show($"Lỗi khi load view: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                            // Show full exception details to help debugging
+                            var inner = ex.InnerException != null ? $"\n\nINNER EX:\n{ex.InnerException.Message}\n{ex.InnerException.StackTrace}" : string.Empty;
+                            MessageBox.Show($"Lỗi khi load view:\n{ex.Message}\n\nSTACK:\n{ex.StackTrace}{inner}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     };
 
@@ -105,10 +103,9 @@ namespace InventoryManagement
             }
         }
 
-        private UserControl CreateHomeControl()
+        private UserControl CreateDashboard()
         {
-            var tb = new TextBlock { Text = "Chào mừng đến Quản lý Kho Hàng", FontSize = 18, FontWeight = FontWeights.SemiBold };
-            return new UserControl { Content = new StackPanel { Children = { tb } } };
+            return (UserControl)new Views.DashboardView();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)

@@ -57,13 +57,8 @@ namespace InventoryManagement.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<InventoryItem> InventoryItems { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<User> Users { get; set; }
-    public DbSet<UserWarehouseRole> UserWarehouseRoles { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<UserWarehouseRole> UserWarehouseRoles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -77,27 +72,33 @@ namespace InventoryManagement.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>().HasIndex(p => p.Code).IsUnique();
-
             modelBuilder.Entity<User>().ToTable("users");
             modelBuilder.Entity<Warehouse>().ToTable("warehouses");
-
-            modelBuilder.Entity<UserWarehouseRole>()
-                .HasOne(uw => uw.User).WithMany(u => u.UserWarehouseRoles).HasForeignKey(uw => uw.UserId).OnDelete(DeleteBehavior.Cascade);
-
+            modelBuilder.Entity<Product>().ToTable("products");
             modelBuilder.Entity<UserWarehouseRole>().ToTable("user_warehouse_roles");
 
+            // Configure relationships
             modelBuilder.Entity<UserWarehouseRole>()
-                .HasOne(uw => uw.Warehouse).WithMany().HasForeignKey(uw => uw.WarehouseId).OnDelete(DeleteBehavior.Cascade);
+                .HasOne(uw => uw.User)
+                .WithMany(u => u.UserWarehouseRoles)
+                .HasForeignKey(uw => uw.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserWarehouseRole>()
-                .HasIndex(uw => new { uw.WarehouseId, uw.Role }).IsUnique();
+                .HasOne(uw => uw.Warehouse)
+                .WithMany(w => w.UserWarehouseRoles)
+                .HasForeignKey(uw => uw.WarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<InventoryItem>()
-                .HasOne(ii => ii.Product).WithMany(p => p.InventoryItems).HasForeignKey(ii => ii.ProductId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<UserWarehouseRole>()
+                .HasIndex(uw => new { uw.WarehouseId, uw.Role })
+                .IsUnique();
 
-            modelBuilder.Entity<InventoryItem>()
-                .HasOne(ii => ii.Warehouse).WithMany(w => w.InventoryItems).HasForeignKey(ii => ii.WarehouseId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Warehouse)
+                .WithMany(w => w.Products)
+                .HasForeignKey(p => p.WarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

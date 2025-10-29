@@ -1,0 +1,51 @@
+<UserControl x:Class="InventoryManagement.Views.WarehousesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Quản lý Kho hàng" FontSize="28" FontWeight="Bold" Foreground="#0F274C" Margin="0,0,0,20"/>
+
+        <!-- Toolbar -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <Button x:Name="BtnAdd" Content="+ Thêm kho" Padding="12,6" Click="BtnAdd_Click" 
+                    Background="#1976D2" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
+            <Button x:Name="BtnEdit" Content="Sửa" Padding="12,6" Click="BtnEdit_Click" 
+                    Background="#F57C00" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
+            <Button x:Name="BtnDelete" Content="Xóa" Padding="12,6" Click="BtnDelete_Click" 
+                    Background="#D32F2F" Foreground="White" BorderThickness="0"/>
+            <TextBox x:Name="TxtSearch" Width="200" Margin="20,0,10,0" 
+                     TextChanged="TxtSearch_TextChanged" 
+                     VerticalContentAlignment="Center"
+                     Text="Tìm kiếm..."/>
+        </StackPanel>
+
+        <!-- DataGrid -->
+        <DataGrid Grid.Row="2" x:Name="DgWarehouses" 
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  Background="White"
+                  AlternatingRowBackground="#F5F5F5"
+                  SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                <DataGridTextColumn Header="Tên kho" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Địa chỉ" Binding="{Binding Address}" Width="*"/>
+                <DataGridTextColumn Header="Số sản phẩm" Binding="{Binding ProductCount}" Width="120"/>
+                <DataGridTextColumn Header="Ngày tạo" Binding="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

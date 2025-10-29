@@ -3,53 +3,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:InventoryManagement.ViewModels"
-             mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="900">
-    <UserControl.DataContext>
-        <vm:ProductsViewModel />
-    </UserControl.DataContext>
-    <Grid Margin="8">
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
-            <Button Content="Làm mới" Command="{Binding LoadCommand}" Margin="0,0,8,0" />
+        <TextBlock Grid.Row="0" Text="Quản lý Sản phẩm" FontSize="28" FontWeight="Bold" Foreground="#0F274C" Margin="0,0,0,20"/>
+
+        <!-- Warehouse Filter -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="Kho:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="SemiBold"/>
+            <ComboBox x:Name="CboWarehouse" Width="250" 
+                      DisplayMemberPath="Name" 
+                      SelectedValuePath="Id"
+                      SelectionChanged="CboWarehouse_SelectionChanged"/>
         </StackPanel>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <!-- Toolbar -->
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,15">
+        <Button x:Name="BtnAdd" Content="+ Thêm sản phẩm" Padding="12,6" Click="BtnAdd_Click" 
+            Background="#1976D2" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
+            <Button x:Name="BtnEdit" Content="Sửa" Padding="12,6" Click="BtnEdit_Click" 
+                    Background="#F57C00" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
+            <Button x:Name="BtnDelete" Content="Xóa" Padding="12,6" Click="BtnDelete_Click" 
+                    Background="#D32F2F" Foreground="White" BorderThickness="0"/>
+            <TextBox x:Name="TxtSearch" Width="200" Margin="20,0,10,0" 
+                     TextChanged="TxtSearch_TextChanged" 
+                     VerticalContentAlignment="Center"
+                     Text="Tìm kiếm..."/>
+        </StackPanel>
 
-            <DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding Selected, Mode=TwoWay}" AutoGenerateColumns="False" Grid.Column="0" Margin="0,0,8,0" IsReadOnly="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Mã" Binding="{Binding Code}" Width="120" />
-                    <DataGridTextColumn Header="Tên" Binding="{Binding Name}" Width="*" />
-                    <DataGridTextColumn Header="Giá" Binding="{Binding Price}" Width="100" />
-                    <DataGridTextColumn Header="Mức cảnh báo" Binding="{Binding ReorderLevel}" Width="120" />
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <StackPanel Grid.Column="1">
-                <TextBlock FontWeight="Bold" Text="Thêm sản phẩm" Margin="0,0,0,6" />
-                <TextBlock Text="Mã" />
-                <TextBox Text="{Binding Editing.Code, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Text="Tên" />
-                <TextBox Text="{Binding Editing.Name, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Text="Giá" />
-                <TextBox Text="{Binding Editing.Price, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Text="Mức cảnh báo" />
-                <TextBox Text="{Binding Editing.ReorderLevel, UpdateSourceTrigger=PropertyChanged}" />
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <Button Content="Thêm" Command="{Binding AddCommand}" Margin="0,0,8,0" />
-                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Margin="0,0,8,0" />
-                    <Button Content="Xóa" Command="{Binding DeleteCommand}" />
-                </StackPanel>
-            </StackPanel>
-        </Grid>
+        <!-- DataGrid -->
+        <DataGrid Grid.Row="3" x:Name="DgProducts" 
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  Background="White"
+                  AlternatingRowBackground="#F5F5F5"
+                  SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="100"/>
+                <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="100"/>
+                <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="200"/>
+                <DataGridTextColumn Header="Ngày tạo" Binding="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
