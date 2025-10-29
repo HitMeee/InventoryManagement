@@ -25,18 +25,43 @@
         </StackPanel>
 
         <!-- Toolbar -->
-    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,15">
-        <Button x:Name="BtnAdd" Content="+ Thêm sản phẩm" Padding="12,6" Click="BtnAdd_Click" 
-            Background="#1976D2" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
-            <Button x:Name="BtnEdit" Content="Sửa" Padding="12,6" Click="BtnEdit_Click" 
-                    Background="#F57C00" Foreground="White" BorderThickness="0" Margin="0,0,10,0"/>
-            <Button x:Name="BtnDelete" Content="Xóa" Padding="12,6" Click="BtnDelete_Click" 
-                    Background="#D32F2F" Foreground="White" BorderThickness="0"/>
-            <TextBox x:Name="TxtSearch" Width="200" Margin="20,0,10,0" 
-                     TextChanged="TxtSearch_TextChanged" 
-                     VerticalContentAlignment="Center"
-                     Text="Tìm kiếm..."/>
-        </StackPanel>
+        <Grid Grid.Row="2" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Action Buttons -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Button x:Name="BtnAdd" Content="+ Thêm sản phẩm" Padding="15,8" Click="BtnAdd_Click" 
+                        Background="#1976D2" Foreground="White" BorderThickness="0" Margin="0,0,10,0"
+                        FontWeight="SemiBold" FontSize="14"/>
+                <Button x:Name="BtnEdit" Content="✏️ Sửa" Padding="15,8" Click="BtnEdit_Click" 
+                        Background="#F57C00" Foreground="White" BorderThickness="0" Margin="0,0,10,0"
+                        FontWeight="SemiBold" FontSize="14"/>
+                <Button x:Name="BtnDelete" Content="🗑️ Xóa" Padding="15,8" Click="BtnDelete_Click" 
+                        Background="#D32F2F" Foreground="White" BorderThickness="0"
+                        FontWeight="SemiBold" FontSize="14"/>
+            </StackPanel>
+            
+            <!-- Search Box -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#666"/>
+                <TextBox x:Name="TxtSearch" Width="280" Height="35" 
+                         TextChanged="TxtSearch_TextChanged" 
+                         VerticalContentAlignment="Center"
+                         FontStyle="Italic"
+                         Foreground="Gray"
+                         GotFocus="TxtSearch_GotFocus"
+                         LostFocus="TxtSearch_LostFocus"
+                         Text="Tìm kiếm theo tên sản phẩm hoặc đơn vị..."
+                         BorderBrush="#BBDEFB"
+                         BorderThickness="2"
+                         Padding="12,8"
+                         FontSize="14"/>
+            </StackPanel>
+        </Grid>
 
         <!-- DataGrid -->
         <DataGrid Grid.Row="3" x:Name="DgProducts" 
@@ -47,15 +72,106 @@
                   GridLinesVisibility="Horizontal"
                   HeadersVisibility="Column"
                   Background="White"
-                  AlternatingRowBackground="#F5F5F5"
-                  SelectionMode="Single">
+                  AlternatingRowBackground="#F8F9FA"
+                  SelectionMode="Single"
+                  RowHeight="38"
+                  FontSize="13"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  BorderBrush="#BBDEFB"
+                  BorderThickness="1"
+                  VerticalAlignment="Stretch"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Background" Value="#E3F2FD"/>
+                    <Setter Property="Foreground" Value="#1565C0"/>
+                    <Setter Property="Padding" Value="10,8"/>
+                    <Setter Property="BorderBrush" Value="#BBDEFB"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="MinHeight" Value="40"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="8,5"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                            <Setter Property="Foreground" Value="#1565C0"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
-                <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Số lượng" Binding="{Binding Quantity}" Width="100"/>
-                <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="100"/>
-                <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="200"/>
-                <DataGridTextColumn Header="Ngày tạo" Binding="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}" Width="120"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" MinWidth="50">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#666"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding Name}" Width="3*" MinWidth="180">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Padding" Value="8,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="SL" Binding="{Binding Quantity}" Width="70" MinWidth="60">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#2E7D32"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="80" MinWidth="70">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="2*" MinWidth="120">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Padding" Value="8,0"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Ngày tạo" Binding="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}" Width="100" MinWidth="90">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="#666"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

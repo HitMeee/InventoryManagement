@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SeedDb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36e45c8bc5f18da1d835940e803898b7b06ac05d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79d3814e3e9df9da1deedec6228086d9dfbbbe4f")]
 [assembly: System.Reflection.AssemblyProductAttribute("SeedDb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SeedDb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
