@@ -39,6 +39,8 @@ namespace InventoryManagement.Views
             var username = TxtUsername.Text?.Trim() ?? string.Empty;
             var password = Pwd.Password ?? string.Empty;
             var wh = CmbWarehouse.SelectedItem as Warehouse;
+            var roleItem = CmbRole.SelectedItem as System.Windows.Controls.ComboBoxItem;
+            var roleDisplay = roleItem?.Content?.ToString() ?? "Admin"; // default Admin
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
@@ -62,12 +64,25 @@ namespace InventoryManagement.Views
                     return;
                 }
 
-                // Không cho phép tạo thêm tài khoản Admin nếu đã tồn tại bất kỳ Admin nào
-                var anyAdmin = ctx.UserWarehouseRoles.Any(x => x.Role == "admin");
-                if (anyAdmin)
+                if (string.Equals(roleDisplay, "Admin", System.StringComparison.OrdinalIgnoreCase))
                 {
-                    MessageBox.Show("Đã tồn tại tài khoản Admin. Không thể tạo thêm tài khoản Admin mới.", "Không thể tạo Admin", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    // Không cho phép tạo thêm tài khoản Admin nếu đã tồn tại bất kỳ Admin nào
+                    var anyAdmin = ctx.UserWarehouseRoles.Any(x => x.Role == "admin");
+                    if (anyAdmin)
+                    {
+                        MessageBox.Show("Đã tồn tại tài khoản Admin. Không thể tạo thêm tài khoản Admin mới.", "Không thể tạo Admin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+                else if (string.Equals(roleDisplay, "Chủ kho", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    // Chỉ cho phép đăng ký Chủ kho ở đây, và giới hạn 1 tài khoản Chủ kho
+                    var anyOwner = ctx.UserWarehouseRoles.Any(x => x.Role == "owner");
+                    if (anyOwner)
+                    {
+                        MessageBox.Show("Đã tồn tại tài khoản Chủ kho. Không thể tạo thêm tài khoản Chủ kho mới.", "Không thể tạo Chủ kho", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
                 }
 
                 var hashed = InventoryManagement.Services.PasswordHelper.HashPassword(password);
@@ -75,18 +90,20 @@ namespace InventoryManagement.Views
                 ctx.Users.Add(user);
                 ctx.SaveChanges();
 
-                // Gán vai trò admin cho kho đã chọn
+                // Gán vai trò tương ứng cho kho đã chọn
+                var roleDb = string.Equals(roleDisplay, "Chủ kho", System.StringComparison.OrdinalIgnoreCase) ? "owner" : "admin";
                 var map = new UserWarehouseRole
                 {
                     UserId = user.Id,
                     WarehouseId = wh.Id,
-                    Role = "admin",
+                    Role = roleDb,
                     CreatedAt = System.DateTime.UtcNow
                 };
                 ctx.UserWarehouseRoles.Add(map);
                 ctx.SaveChanges();
 
-                MessageBox.Show("Đăng ký Admin thành công. Vui lòng đăng nhập lại.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                var msg = string.Equals(roleDb, "owner", System.StringComparison.OrdinalIgnoreCase) ? "Đăng ký Chủ kho thành công. Vui lòng đăng nhập lại." : "Đăng ký Admin thành công. Vui lòng đăng nhập lại.";
+                MessageBox.Show(msg, "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.DialogResult = true;
                 this.Close();
             }

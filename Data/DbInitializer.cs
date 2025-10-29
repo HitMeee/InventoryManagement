@@ -38,13 +38,48 @@ namespace InventoryManagement.Data
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     warehouse_id INTEGER NOT NULL,
-    role TEXT CHECK(role IN ('admin','staff')) NOT NULL,
+    role TEXT CHECK(role IN ('owner','admin','staff')) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (warehouse_id, role),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE CASCADE
 );";
                 cmd.ExecuteNonQuery();
+
+                // Migrate existing table to include 'owner' in CHECK constraint if needed
+                cmd.CommandText = "SELECT sql FROM sqlite_master WHERE type='table' AND name='user_warehouse_roles'";
+                var tableSql = (cmd.ExecuteScalar() as string) ?? string.Empty;
+                if (!tableSql.Contains("'owner'"))
+                {
+                    // Rebuild table with updated CHECK constraint
+                    cmd.CommandText = @"CREATE TABLE user_warehouse_roles_new (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    warehouse_id INTEGER NOT NULL,
+    role TEXT CHECK(role IN ('owner','admin','staff')) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (warehouse_id, role),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE CASCADE
+);";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = @"INSERT INTO user_warehouse_roles_new (id,user_id,warehouse_id,role,created_at)
+SELECT id,user_id,warehouse_id,role,created_at FROM user_warehouse_roles";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "DROP TABLE user_warehouse_roles";
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "ALTER TABLE user_warehouse_roles_new RENAME TO user_warehouse_roles";
+                    cmd.ExecuteNonQuery();
+
+                    // Recreate indexes
+                    cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_user_warehouse_roles_user ON user_warehouse_roles(user_id);";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_user_warehouse_roles_warehouse ON user_warehouse_roles(warehouse_id);";
+                    cmd.ExecuteNonQuery();
+                }
 
                 cmd.CommandText = @"CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
