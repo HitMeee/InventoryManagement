@@ -140,7 +140,15 @@ namespace InventoryManagement.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi thêm người dùng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Unwrap inner exceptions for clearer SQLite/EF errors
+                var msg = ex.Message;
+                var inner = ex.InnerException;
+                while (inner != null)
+                {
+                    msg += "\n" + inner.Message;
+                    inner = inner.InnerException;
+                }
+                MessageBox.Show($"Lỗi thêm người dùng: {msg}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

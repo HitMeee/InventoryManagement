@@ -40,7 +40,6 @@ namespace InventoryManagement.Data
     warehouse_id INTEGER NOT NULL,
     role TEXT CHECK(role IN ('owner','admin','staff')) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (warehouse_id, role),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE CASCADE
 );";
@@ -49,7 +48,8 @@ namespace InventoryManagement.Data
                 // Migrate existing table to include 'owner' in CHECK constraint if needed
                 cmd.CommandText = "SELECT sql FROM sqlite_master WHERE type='table' AND name='user_warehouse_roles'";
                 var tableSql = (cmd.ExecuteScalar() as string) ?? string.Empty;
-                if (!tableSql.Contains("'owner'"))
+                // Rebuild table if schema outdated (missing 'owner' in CHECK) OR still contains global UNIQUE (warehouse_id, role)
+                if (!tableSql.Contains("'owner'") || tableSql.Contains("UNIQUE (warehouse_id, role)"))
                 {
                     // Rebuild table with updated CHECK constraint
                     cmd.CommandText = @"CREATE TABLE user_warehouse_roles_new (
@@ -58,7 +58,6 @@ namespace InventoryManagement.Data
     warehouse_id INTEGER NOT NULL,
     role TEXT CHECK(role IN ('owner','admin','staff')) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (warehouse_id, role),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE CASCADE
 );";
@@ -95,6 +94,12 @@ SELECT id,user_id,warehouse_id,role,created_at FROM user_warehouse_roles";
                 cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_user_warehouse_roles_user ON user_warehouse_roles(user_id);";
                 cmd.ExecuteNonQuery();
                 cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_user_warehouse_roles_warehouse ON user_warehouse_roles(warehouse_id);";
+                cmd.ExecuteNonQuery();
+
+                // Enforce unique Owner/Admin per warehouse via partial unique indexes (SQLite supports WHERE)
+                cmd.CommandText = @"CREATE UNIQUE INDEX IF NOT EXISTS ux_uwr_owner_per_warehouse ON user_warehouse_roles(warehouse_id) WHERE role = 'owner';";
+                cmd.ExecuteNonQuery();
+                cmd.CommandText = @"CREATE UNIQUE INDEX IF NOT EXISTS ux_uwr_admin_per_warehouse ON user_warehouse_roles(warehouse_id) WHERE role = 'admin';";
                 cmd.ExecuteNonQuery();
 
                 cmd.CommandText = "PRAGMA foreign_keys = ON;";
