@@ -23,7 +23,8 @@ namespace InventoryManagement.Data
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     address TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    owner_id INTEGER
 );";
                 cmd.ExecuteNonQuery();
 
@@ -100,6 +101,41 @@ SELECT id,user_id,warehouse_id,role,created_at FROM user_warehouse_roles";
                 cmd.CommandText = @"CREATE UNIQUE INDEX IF NOT EXISTS ux_uwr_owner_per_warehouse ON user_warehouse_roles(warehouse_id) WHERE role = 'owner';";
                 cmd.ExecuteNonQuery();
                 cmd.CommandText = @"CREATE UNIQUE INDEX IF NOT EXISTS ux_uwr_admin_per_warehouse ON user_warehouse_roles(warehouse_id) WHERE role = 'admin';";
+                cmd.ExecuteNonQuery();
+
+                // Ensure owner_id column exists in warehouses (for upgrades)
+                cmd.CommandText = "PRAGMA table_info(warehouses);";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    bool hasOwner = false;
+                    while (reader.Read())
+                    {
+                        var colName = reader[1]?.ToString() ?? string.Empty;
+                        if (string.Equals(colName, "owner_id", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hasOwner = true;
+                            break;
+                        }
+                    }
+                    reader.Close();
+                    if (!hasOwner)
+                    {
+                        cmd.CommandText = "ALTER TABLE warehouses ADD COLUMN owner_id INTEGER;";
+                        try { cmd.ExecuteNonQuery(); } catch { }
+                    }
+                }
+
+                // Index for faster lookup by owner
+                cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_warehouses_owner ON warehouses(owner_id);";
+                cmd.ExecuteNonQuery();
+
+                // Backfill owner_id from existing owner mappings if any
+                cmd.CommandText = @"UPDATE warehouses 
+SET owner_id = (
+    SELECT user_id FROM user_warehouse_roles uw
+    WHERE uw.warehouse_id = warehouses.id AND uw.role = 'owner'
+    LIMIT 1
+) WHERE owner_id IS NULL;";
                 cmd.ExecuteNonQuery();
 
                 cmd.CommandText = "PRAGMA foreign_keys = ON;";

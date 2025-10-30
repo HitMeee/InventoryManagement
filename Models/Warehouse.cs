@@ -21,6 +21,11 @@ namespace InventoryManagement.Models
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // Owner of the warehouse (a user with role 'owner' for this warehouse)
+        // An owner can own many warehouses, but each warehouse has exactly one owner.
+        [Column("owner_id")]
+        public int? OwnerId { get; set; }
+
         // Navigation properties
         public List<Product>? Products { get; set; }
         public List<UserWarehouseRole>? UserWarehouseRoles { get; set; }

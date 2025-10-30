@@ -121,6 +121,12 @@ namespace InventoryManagement.Services
                 }
             }
             ctx.UserWarehouseRoles.Add(new UserWarehouseRole { UserId = u.Id, WarehouseId = warehouseId, Role = role, CreatedAt = DateTime.UtcNow });
+            // If the new role is owner, set warehouses.owner_id accordingly
+            if (string.Equals(role, "owner", StringComparison.OrdinalIgnoreCase))
+            {
+                var wh = ctx.Warehouses.FirstOrDefault(w => w.Id == warehouseId);
+                if (wh != null) { wh.OwnerId = u.Id; }
+            }
             ctx.SaveChanges();
             return u;
         }
@@ -158,6 +164,13 @@ namespace InventoryManagement.Services
                     }
                 }
                 ctx.UserWarehouseRoles.Add(new UserWarehouseRole { UserId = userId, WarehouseId = warehouseId.Value, Role = role, CreatedAt = DateTime.UtcNow });
+                // Reflect owner assignment to warehouses.owner_id
+                var wh = ctx.Warehouses.FirstOrDefault(w => w.Id == warehouseId.Value);
+                if (wh != null)
+                {
+                    if (string.Equals(role, "owner", StringComparison.OrdinalIgnoreCase)) wh.OwnerId = userId;
+                    else if (wh.OwnerId == userId) wh.OwnerId = null;
+                }
             }
             ctx.SaveChanges();
         }
