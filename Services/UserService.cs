@@ -2,6 +2,7 @@ using InventoryManagement.Data;
 using InventoryManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System;
 
 namespace InventoryManagement.Services
 {
@@ -9,6 +10,26 @@ namespace InventoryManagement.Services
     {
         private readonly string? _conn;
         public UserService(string? connectionString = null) { _conn = connectionString; }
+
+        private static bool CanCurrentUserAccessWarehouse(AppDbContext ctx, int warehouseId)
+        {
+            if (Services.AuthService.IsAdmin()) return true;
+            var current = Services.AuthService.CurrentUser;
+            if (current == null) return false;
+            if (Services.AuthService.IsOwner())
+            {
+                var wh = ctx.Warehouses.AsNoTracking().FirstOrDefault(w => w.Id == warehouseId);
+                return wh != null && wh.OwnerId == current.Id;
+            }
+            // staff: only warehouses mapped to them
+            return Services.AuthService.CurrentUserWarehouseIds.Contains(warehouseId);
+        }
+
+        private static bool CanCurrentUserManageUsers()
+        {
+            // Only Admin or Owner can add/update/delete users
+            return Services.AuthService.IsAdmin() || Services.AuthService.IsOwner();
+        }
 
         public List<User> GetAll()
         {
@@ -30,6 +51,11 @@ namespace InventoryManagement.Services
             var e = ctx.Users.Find(id);
             if (e == null) return false;
 
+            if (!CanCurrentUserManageUsers())
+            {
+                throw new InvalidOperationException("Bạn không có quyền thực hiện thao tác này.");
+            }
+
             // Check role mappings of target
             var targetMaps = ctx.UserWarehouseRoles.Where(uw => uw.UserId == id).ToList();
             var isAdmin = targetMaps.Any(uw => string.Equals(uw.Role, "admin", StringComparison.OrdinalIgnoreCase));
@@ -44,6 +70,18 @@ namespace InventoryManagement.Services
             if (isAdmin && !Services.AuthService.IsOwner())
             {
                 throw new InvalidOperationException("Chỉ Chủ kho mới được xoá tài khoản Admin.");
+            }
+
+            // Scope restriction: Non-admin (i.e., Owner) may only delete users who belong to warehouses they own
+            if (!Services.AuthService.IsAdmin())
+            {
+                var myId = Services.AuthService.CurrentUser?.Id ?? -1;
+                var myWarehouses = ctx.Warehouses.AsNoTracking().Where(w => w.OwnerId == myId).Select(w => w.Id).ToHashSet();
+                var shareAny = targetMaps.Any(m => myWarehouses.Contains(m.WarehouseId));
+                if (!shareAny)
+                {
+                    throw new InvalidOperationException("Bạn không thể thao tác với người dùng thuộc kho không do bạn quản lý.");
+                }
             }
 
             // Remove role mappings first to keep FK integrity
@@ -99,6 +137,14 @@ namespace InventoryManagement.Services
         public User AddWithRoleAndWarehouse(string username, string passwordHash, string roleDisplay, int warehouseId)
         {
             using var ctx = new AppDbContext(_conn);
+            if (!CanCurrentUserManageUsers())
+            {
+                throw new InvalidOperationException("Bạn không có quyền thực hiện thao tác này.");
+            }
+            if (!CanCurrentUserAccessWarehouse(ctx, warehouseId))
+            {
+                throw new InvalidOperationException("Bạn không thể gán người dùng vào kho không thuộc phạm vi quản lý.");
+            }
             var u = new User { Username = username, PasswordHash = passwordHash };
             ctx.Users.Add(u);
             ctx.SaveChanges();
@@ -134,6 +180,10 @@ namespace InventoryManagement.Services
         public void UpdateUserAndMapping(int userId, string? newUsername, string? newPasswordHash, string? roleDisplay, int? warehouseId)
         {
             using var ctx = new AppDbContext(_conn);
+            if (!CanCurrentUserManageUsers())
+            {
+                throw new InvalidOperationException("Bạn không có quyền thực hiện thao tác này.");
+            }
             var u = ctx.Users.FirstOrDefault(x => x.Id == userId) ?? throw new InvalidOperationException("User không tồn tại");
             if (!string.IsNullOrWhiteSpace(newUsername)) u.Username = newUsername!;
             if (!string.IsNullOrEmpty(newPasswordHash)) u.PasswordHash = newPasswordHash!;
@@ -145,6 +195,10 @@ namespace InventoryManagement.Services
 
             if (warehouseId.HasValue && !string.IsNullOrWhiteSpace(roleDisplay))
             {
+                if (!CanCurrentUserAccessWarehouse(ctx, warehouseId.Value))
+                {
+                    throw new InvalidOperationException("Bạn không thể gán người dùng vào kho không thuộc phạm vi quản lý.");
+                }
                 var role = NormalizeRoleToDb(roleDisplay!);
                 // Enforce unique Owner/Admin per warehouse
                 if (string.Equals(role, "owner", StringComparison.OrdinalIgnoreCase))
