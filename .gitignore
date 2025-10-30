@@ -1,0 +1,54 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# Rider/JetBrains
+.idea/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+
+# Logs
+*.log
+logs/
+
+# Cache/Temp
+*.cache
+*.tmp
+*.temp
+
+# Compiled binaries and symbols (usually under bin/ or obj/, but keep generic)
+*.ilk
+*.ipdb
+*.iobj
+*.pdb
+*.obj
+
+# Test results
+TestResults/
+*.trx
+
+# WPF generated artifacts (normally in obj/)
+*.baml
+*.g.cs
+*.g.i.cs
+
+# Ensure database stays tracked in this repo
+!inventory.db
