@@ -142,6 +142,13 @@ namespace InventoryManagement.Views
 
         private void CmbRole_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            // Avoid running during InitializeComponent when named elements may not be ready
+            if (!this.IsLoaded)
+            {
+                // Defer to after load
+                this.Dispatcher.BeginInvoke(new Action(() => UpdateWarehouseVisibility()));
+                return;
+            }
             UpdateWarehouseVisibility();
         }
 
@@ -150,6 +157,10 @@ namespace InventoryManagement.Views
             var roleItem = CmbRole.SelectedItem as System.Windows.Controls.ComboBoxItem;
             var roleDisplay = roleItem?.Content?.ToString() ?? "Chủ kho";
             // Hide warehouse selector for Chủ kho; show for Admin
+            if (WarehouseContainer == null)
+            {
+                return; // Named element not ready yet; will be handled on Loaded
+            }
             if (string.Equals(roleDisplay, "Chủ kho", System.StringComparison.OrdinalIgnoreCase))
             {
                 WarehouseContainer.Visibility = Visibility.Collapsed;
