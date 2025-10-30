@@ -106,6 +106,11 @@ namespace InventoryManagement.Views
                         ctx.SaveChanges();
 
                         MessageBox.Show("Đăng ký Chủ kho thành công và đã tạo kho sở hữu.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                        // Quay lại màn hình đăng nhập (nếu được mở từ LoginWindow)
+                        if (this.Owner is Views.LoginWindow lw)
+                        {
+                            try { lw.Show(); lw.Activate(); } catch { }
+                        }
                         this.DialogResult = true;
                         this.Close();
                         return;
@@ -130,6 +135,11 @@ namespace InventoryManagement.Views
                     ctx.SaveChanges();
 
                     MessageBox.Show("Đăng ký Admin thành công. Vui lòng đăng nhập lại.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Quay lại màn hình đăng nhập (nếu được mở từ LoginWindow)
+                    if (this.Owner is Views.LoginWindow lw)
+                    {
+                        try { lw.Show(); lw.Activate(); } catch { }
+                    }
                     this.DialogResult = true;
                     this.Close();
                 }
