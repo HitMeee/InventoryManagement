@@ -39,6 +39,7 @@ namespace InventoryManagement.Views
                 using var db = new AppDbContext();
 
                 var isOwner = AuthService.IsOwner();
+                var isAdmin = AuthService.IsAdmin();
 
                 if (isOwner)
                 {
@@ -75,6 +76,39 @@ namespace InventoryManagement.Views
 
                     DgWarehouses.ItemsSource = ownerWarehouses;
                     if (StatsGrid != null) StatsGrid.Visibility = System.Windows.Visibility.Visible;
+                }
+                else if (isAdmin)
+                {
+                    // Hiển thị số liệu thuộc về Admin (chỉ phạm vi các kho được phân công)
+                    var assignedIds = AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
+
+                    var warehouseCount = assignedIds.Count;
+                    var productCount = db.Products.Count(p => assignedIds.Contains(p.WarehouseId));
+                    var staffCount = db.UserWarehouseRoles
+                        .Where(uwr => assignedIds.Contains(uwr.WarehouseId) && uwr.Role.ToLower() == "staff")
+                        .Select(uwr => uwr.UserId)
+                        .Distinct()
+                        .Count();
+
+                    TxtWarehouseCount.Text = warehouseCount.ToString();
+                    TxtProductCount.Text = productCount.ToString();
+                    TxtUserCount.Text = staffCount.ToString();
+
+                    if (StatsGrid != null) StatsGrid.Visibility = System.Windows.Visibility.Visible;
+
+                    // Danh sách kho được phân công cho Admin
+                    var adminWarehouses = db.Warehouses
+                        .Where(w => assignedIds.Contains(w.Id))
+                        .Select(w => new WarehouseInfo
+                        {
+                            Name = w.Name,
+                            Address = w.Address,
+                            Role = "Admin",
+                            ProductCount = db.Products.Count(p => p.WarehouseId == w.Id)
+                        })
+                        .ToList();
+
+                    DgWarehouses.ItemsSource = adminWarehouses;
                 }
                 else
                 {
