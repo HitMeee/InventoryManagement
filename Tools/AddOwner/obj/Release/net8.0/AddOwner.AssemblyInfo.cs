@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AddOwner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a6b5d722c60117efdf57ef191d99133c097eff12")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+899ae1d9bea482bea3cbfc17d897b4090df95ffe")]
 [assembly: System.Reflection.AssemblyProductAttribute("AddOwner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AddOwner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

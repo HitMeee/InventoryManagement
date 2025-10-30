@@ -50,7 +50,13 @@ namespace InventoryManagement.Views
                     var ownerId = Services.AuthService.CurrentUser?.Id ?? -1;
                     q = q.Where(w => w.OwnerId == ownerId);
                 }
-                else if (!Services.AuthService.IsAdmin())
+                else if (Services.AuthService.IsAdmin())
+                {
+                    // Admin: chỉ thấy các kho được phân công
+                    var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
+                    q = q.Where(w => ids.Contains(w.Id));
+                }
+                else
                 {
                     // Staff: only warehouses assigned to them
                     var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();

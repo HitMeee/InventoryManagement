@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RemovePlainColumn")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+103f4911f88f95e3bcd01c53faef750289cfb5a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+899ae1d9bea482bea3cbfc17d897b4090df95ffe")]
 [assembly: System.Reflection.AssemblyProductAttribute("RemovePlainColumn")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RemovePlainColumn")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

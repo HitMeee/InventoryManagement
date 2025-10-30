@@ -74,6 +74,13 @@ namespace InventoryManagement
                     var factory = item.Factory;
                     if (!RolePermissionService.HasPermission(user.Role, feature)) continue;
 
+                    // Ẩn mục "Kho hàng" đối với Nhân viên kho
+                    if (string.Equals(key, "warehouses", StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(user.Role, "Nhân viên kho", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
                     var btn = new Button { Content = title, Tag = key, Style = (Style)FindResource("NavButtonStyle"), Margin = new Thickness(4), HorizontalAlignment = HorizontalAlignment.Stretch };
                     btn.Click += (s, ea) =>
                     {
