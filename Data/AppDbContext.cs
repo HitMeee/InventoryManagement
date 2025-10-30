@@ -92,9 +92,10 @@ namespace InventoryManagement.Data
                 .HasForeignKey(uw => uw.WarehouseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<UserWarehouseRole>()
-                .HasIndex(uw => new { uw.WarehouseId, uw.Role })
-                .IsUnique();
+            // Do not enforce a global unique (WarehouseId, Role) at the model level
+            // because we need multiple 'staff' per warehouse. Uniqueness for
+            // 'owner' and 'admin' will be enforced at the DB (partial unique indexes)
+            // and in the service layer.
 
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Warehouse)

@@ -103,6 +103,23 @@ namespace InventoryManagement.Services
             ctx.Users.Add(u);
             ctx.SaveChanges();
             var role = NormalizeRoleToDb(roleDisplay);
+            // Enforce unique Owner/Admin per warehouse
+            if (string.Equals(role, "owner", StringComparison.OrdinalIgnoreCase))
+            {
+                var existsOwner = ctx.UserWarehouseRoles.Any(x => x.WarehouseId == warehouseId && x.Role.ToLower() == "owner");
+                if (existsOwner)
+                {
+                    throw new InvalidOperationException("Mỗi kho chỉ có duy nhất 1 'Chủ kho'.");
+                }
+            }
+            if (string.Equals(role, "admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var existsAdmin = ctx.UserWarehouseRoles.Any(x => x.WarehouseId == warehouseId && x.Role.ToLower() == "admin");
+                if (existsAdmin)
+                {
+                    throw new InvalidOperationException("Mỗi kho chỉ có duy nhất 1 'Admin'.");
+                }
+            }
             ctx.UserWarehouseRoles.Add(new UserWarehouseRole { UserId = u.Id, WarehouseId = warehouseId, Role = role, CreatedAt = DateTime.UtcNow });
             ctx.SaveChanges();
             return u;
@@ -123,6 +140,23 @@ namespace InventoryManagement.Services
             if (warehouseId.HasValue && !string.IsNullOrWhiteSpace(roleDisplay))
             {
                 var role = NormalizeRoleToDb(roleDisplay!);
+                // Enforce unique Owner/Admin per warehouse
+                if (string.Equals(role, "owner", StringComparison.OrdinalIgnoreCase))
+                {
+                    var existsOwner = ctx.UserWarehouseRoles.Any(x => x.WarehouseId == warehouseId.Value && x.Role.ToLower() == "owner" && x.UserId != userId);
+                    if (existsOwner)
+                    {
+                        throw new InvalidOperationException("Mỗi kho chỉ có duy nhất 1 'Chủ kho'.");
+                    }
+                }
+                if (string.Equals(role, "admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    var existsAdmin = ctx.UserWarehouseRoles.Any(x => x.WarehouseId == warehouseId.Value && x.Role.ToLower() == "admin" && x.UserId != userId);
+                    if (existsAdmin)
+                    {
+                        throw new InvalidOperationException("Mỗi kho chỉ có duy nhất 1 'Admin'.");
+                    }
+                }
                 ctx.UserWarehouseRoles.Add(new UserWarehouseRole { UserId = userId, WarehouseId = warehouseId.Value, Role = role, CreatedAt = DateTime.UtcNow });
             }
             ctx.SaveChanges();
