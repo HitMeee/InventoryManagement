@@ -13,7 +13,11 @@ namespace InventoryManagement.Services
 
         private static bool CanCurrentUserAccessWarehouse(AppDbContext ctx, int warehouseId)
         {
-            if (Services.AuthService.IsAdmin()) return true;
+            // Admin: only warehouses mapped to them (scoped admin)
+            if (Services.AuthService.IsAdmin())
+            {
+                return Services.AuthService.CurrentUserWarehouseIds.Contains(warehouseId);
+            }
             var current = Services.AuthService.CurrentUser;
             if (current == null) return false;
             if (Services.AuthService.IsOwner())
@@ -72,16 +76,22 @@ namespace InventoryManagement.Services
                 throw new InvalidOperationException("Chỉ Chủ kho mới được xoá tài khoản Admin.");
             }
 
-            // Scope restriction: Non-admin (i.e., Owner) may only delete users who belong to warehouses they own
-            if (!Services.AuthService.IsAdmin())
+            // Scope restriction: Owner or Admin may only delete users who share at least one warehouse in their scope
+            var shareAllowed = false;
+            if (Services.AuthService.IsOwner())
             {
                 var myId = Services.AuthService.CurrentUser?.Id ?? -1;
                 var myWarehouses = ctx.Warehouses.AsNoTracking().Where(w => w.OwnerId == myId).Select(w => w.Id).ToHashSet();
-                var shareAny = targetMaps.Any(m => myWarehouses.Contains(m.WarehouseId));
-                if (!shareAny)
-                {
-                    throw new InvalidOperationException("Bạn không thể thao tác với người dùng thuộc kho không do bạn quản lý.");
-                }
+                shareAllowed = targetMaps.Any(m => myWarehouses.Contains(m.WarehouseId));
+            }
+            else if (Services.AuthService.IsAdmin())
+            {
+                var myWarehouses = Services.AuthService.CurrentUserWarehouseIds?.ToHashSet() ?? new HashSet<int>();
+                shareAllowed = targetMaps.Any(m => myWarehouses.Contains(m.WarehouseId));
+            }
+            if (!shareAllowed && (Services.AuthService.IsOwner() || Services.AuthService.IsAdmin()))
+            {
+                throw new InvalidOperationException("Bạn không thể thao tác với người dùng thuộc kho không do bạn quản lý.");
             }
 
             // Remove role mappings first to keep FK integrity
@@ -103,18 +113,20 @@ namespace InventoryManagement.Services
             var wmap = ctx.Warehouses.AsNoTracking().ToDictionary(w => w.Id, w => w.Name);
 
             var list = new List<(User,string,string,int?)>();
+            var scopeIds = currentUserWarehouseIds ?? Services.AuthService.CurrentUserWarehouseIds;
+            var applyScopeFilter = true; // Always apply scoping for Admin/Owner/Staff
             foreach (var u in users)
             {
                 var umaps = maps.Where(m => m.UserId == u.Id).ToList();
-                // If the current user is not admin/owner, skip users who don't share a warehouse mapping
-                if (!isAdminOrOwner)
+                // Skip users who don't share a warehouse mapping with current user's scope
+                if (applyScopeFilter)
                 {
-                    if (currentUserWarehouseIds == null || currentUserWarehouseIds.Count == 0)
+                    if (scopeIds == null || scopeIds.Count == 0)
                     {
                         // cannot see any users
                         continue;
                     }
-                    var shared = umaps.Any(m => currentUserWarehouseIds.Contains(m.WarehouseId));
+                    var shared = umaps.Any(m => scopeIds.Contains(m.WarehouseId));
                     if (!shared) continue;
                 }
 
