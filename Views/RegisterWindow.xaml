@@ -80,7 +80,7 @@
                 <!-- Right form -->
                 <StackPanel Grid.Column="1" Margin="8" VerticalAlignment="Center">
                     <TextBlock Text="Thông tin đăng ký" FontSize="20" FontWeight="Bold" Foreground="#111827" />
-                    <TextBlock Text="Nhập tên đăng nhập, mật khẩu, vai trò và chọn kho (cho Admin/Chủ kho)" FontSize="12" Foreground="#6B7280" Margin="0,6,0,12" />
+                    <TextBlock Text="Nhập tên đăng nhập, mật khẩu, vai trò. Nếu chọn Admin: phải chọn kho. Nếu chọn Chủ kho: sẽ tạo kho sau." FontSize="12" Foreground="#6B7280" Margin="0,6,0,12" />
 
                     <Border Style="{StaticResource InputBoxStyle}">
                         <DockPanel>
@@ -99,14 +99,14 @@
                     <Border Style="{StaticResource InputBoxStyle}">
                         <DockPanel>
                             <TextBlock Text="⭐" FontSize="14" VerticalAlignment="Center" Margin="4" />
-                            <ComboBox x:Name="CmbRole" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="4">
+                            <ComboBox x:Name="CmbRole" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="4" SelectionChanged="CmbRole_SelectionChanged">
                                 <ComboBoxItem Content="Chủ kho" IsSelected="True" />
                                 <ComboBoxItem Content="Admin" />
                             </ComboBox>
                         </DockPanel>
                     </Border>
 
-                    <Border Style="{StaticResource InputBoxStyle}">
+                    <Border x:Name="WarehouseContainer" Style="{StaticResource InputBoxStyle}">
                         <DockPanel>
                             <TextBlock Text="🏬" FontSize="14" VerticalAlignment="Center" Margin="4" />
                             <ComboBox x:Name="CmbWarehouse" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="4"

@@ -44,7 +44,19 @@ namespace InventoryManagement.Views
             try
             {
                 using var db = new AppDbContext();
-                var warehouses = db.Warehouses.OrderBy(w => w.Name).ToList();
+                var q = db.Warehouses.AsQueryable();
+                if (Services.AuthService.IsOwner())
+                {
+                    var ownerId = Services.AuthService.CurrentUser?.Id ?? -1;
+                    q = q.Where(w => w.OwnerId == ownerId);
+                }
+                else if (!Services.AuthService.IsAdmin())
+                {
+                    // Staff: only warehouses assigned to them
+                    var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
+                    q = q.Where(w => ids.Contains(w.Id));
+                }
+                var warehouses = q.OrderBy(w => w.Name).ToList();
                 
                 CboWarehouse.ItemsSource = warehouses;
                 if (warehouses.Any())
