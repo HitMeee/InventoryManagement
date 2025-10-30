@@ -307,30 +307,29 @@ namespace InventoryManagement.Views
                     return;
                 }
 
-                // Nhập số lượng đơn giản
-                string input = Microsoft.VisualBasic.Interaction.InputBox(
-                    "Nhập số lượng cần nhập:", "Nhập hàng", "1");
+                var dialog = new TransactionDialog("IMPORT", product.Name, productDisplay.WarehouseName, product.Quantity, product.Unit);
+                dialog.Owner = Window.GetWindow(this);
                 
-                if (string.IsNullOrEmpty(input)) return;
-                
-                if (!int.TryParse(input, out int quantity) || quantity <= 0)
+                if (dialog.ShowDialog() == true)
                 {
-                    MessageBox.Show("Vui lòng nhập số lượng hợp lệ (lớn hơn 0)!", "Lỗi", 
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    // Lưu giao dịch với thông tin chi tiết
+                    SaveTransaction("IMPORT", product.Id, productDisplay.WarehouseId, dialog.Quantity, product.Unit, dialog.Note);
+
+                    // Cập nhật số lượng sản phẩm
+                    product.Quantity += dialog.Quantity;
+                    db.Products.Update(product);
+                    db.SaveChanges();
+
+                    LoadProducts();
+                    
+                    var noteText = string.IsNullOrEmpty(dialog.Note) ? "" : $"\nGhi chú: {dialog.Note}";
+                    MessageBox.Show($"Nhập hàng thành công!\n\n" +
+                                   $"Sản phẩm: {product.Name}\n" +
+                                   $"Số lượng nhập: {dialog.Quantity:N0} {product.Unit}\n" +
+                                   $"Tồn kho mới: {product.Quantity:N0} {product.Unit}" +
+                                   noteText, 
+                        "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-
-                // Lưu giao dịch vào bảng tạm (dùng file text đơn giản)
-                SaveTransaction("IMPORT", product.Name, productDisplay.WarehouseName, quantity, product.Unit);
-
-                // Cập nhật số lượng sản phẩm
-                product.Quantity += quantity;
-                db.Products.Update(product);
-                db.SaveChanges();
-
-                LoadProducts();
-                MessageBox.Show($"Nhập hàng thành công! Đã nhập {quantity} {product.Unit}.", 
-                    "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -362,37 +361,29 @@ namespace InventoryManagement.Views
                     return;
                 }
 
-                // Nhập số lượng đơn giản
-                string input = Microsoft.VisualBasic.Interaction.InputBox(
-                    $"Nhập số lượng cần xuất (tối đa {product.Quantity}):", "Xuất hàng", "1");
+                var dialog = new TransactionDialog("EXPORT", product.Name, productDisplay.WarehouseName, product.Quantity, product.Unit);
+                dialog.Owner = Window.GetWindow(this);
                 
-                if (string.IsNullOrEmpty(input)) return;
-                
-                if (!int.TryParse(input, out int quantity) || quantity <= 0)
+                if (dialog.ShowDialog() == true)
                 {
-                    MessageBox.Show("Vui lòng nhập số lượng hợp lệ (lớn hơn 0)!", "Lỗi", 
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    // Lưu giao dịch với thông tin chi tiết
+                    SaveTransaction("EXPORT", product.Id, productDisplay.WarehouseId, dialog.Quantity, product.Unit, dialog.Note);
+
+                    // Cập nhật số lượng sản phẩm
+                    product.Quantity -= dialog.Quantity;
+                    db.Products.Update(product);
+                    db.SaveChanges();
+
+                    LoadProducts();
+                    
+                    var noteText = string.IsNullOrEmpty(dialog.Note) ? "" : $"\nGhi chú: {dialog.Note}";
+                    MessageBox.Show($"Xuất hàng thành công!\n\n" +
+                                   $"Sản phẩm: {product.Name}\n" +
+                                   $"Số lượng xuất: {dialog.Quantity:N0} {product.Unit}\n" +
+                                   $"Tồn kho còn lại: {product.Quantity:N0} {product.Unit}" +
+                                   noteText, 
+                        "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-
-                if (quantity > product.Quantity)
-                {
-                    MessageBox.Show($"Số lượng xuất ({quantity}) không thể lớn hơn số lượng hiện có ({product.Quantity})!", 
-                        "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // Lưu giao dịch vào bảng tạm (dùng file text đơn giản)
-                SaveTransaction("EXPORT", product.Name, productDisplay.WarehouseName, quantity, product.Unit);
-
-                // Cập nhật số lượng sản phẩm
-                product.Quantity -= quantity;
-                db.Products.Update(product);
-                db.SaveChanges();
-
-                LoadProducts();
-                MessageBox.Show($"Xuất hàng thành công! Đã xuất {quantity} {product.Unit}.", 
-                    "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -408,8 +399,13 @@ namespace InventoryManagement.Views
                 var button = (Button)sender;
                 var productDisplay = (ProductDisplay)button.Tag;
                 
-                MessageBox.Show($"Lịch sử cho sản phẩm: {productDisplay.Name}\nChức năng lịch sử đang được phát triển.", 
-                    "Lịch sử", MessageBoxButton.OK, MessageBoxImage.Information);
+                var historyDialog = new ProductHistoryDialog(
+                    productDisplay.Name, 
+                    productDisplay.Id, 
+                    productDisplay.WarehouseName, 
+                    productDisplay.Unit);
+                historyDialog.Owner = Window.GetWindow(this);
+                historyDialog.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -433,22 +429,33 @@ namespace InventoryManagement.Views
             }
         }
 
-        private void SaveTransaction(string type, string productName, string warehouseName, int quantity, string unit)
+        private void SaveTransaction(string type, int productId, int warehouseId, int quantity, string unit, string note = "")
         {
             try
             {
-                var logEntry = $"{DateTime.Now:dd/MM/yyyy HH:mm}\t{type}\t{productName}\t{warehouseName}\t{quantity}\t{unit}";
-                var logFile = "transactions.log";
+                using var db = new AppDbContext();
                 
-                using (var writer = new System.IO.StreamWriter(logFile, true, System.Text.Encoding.UTF8))
+                var transaction = new InventoryTransaction
                 {
-                    writer.WriteLine(logEntry);
-                }
+                    CreatedAt = DateTime.Now,
+                    TransactionType = type,
+                    ProductId = productId,
+                    WarehouseId = warehouseId,
+                    Quantity = quantity,
+                    Unit = unit,
+                    UserId = Services.AuthService.CurrentUser?.Id ?? 1, // Default user nếu không có current user
+                    Note = note
+                };
+                
+                db.InventoryTransactions.Add(transaction);
+                db.SaveChanges();
+                
+                System.Diagnostics.Debug.WriteLine($"Transaction saved to database: {type} - ProductId {productId} - Quantity {quantity}");
             }
             catch (Exception ex)
             {
-                // Không hiển thị lỗi cho user, chỉ log thầm
-                System.Diagnostics.Debug.WriteLine($"Lỗi lưu log: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Lỗi lưu transaction vào database: {ex.Message}");
+                MessageBox.Show($"Lỗi lưu lịch sử giao dịch: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

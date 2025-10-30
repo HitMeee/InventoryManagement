@@ -13,6 +13,9 @@ namespace InventoryManagement.Models
         [Column("product_id")]
         public int ProductId { get; set; }
 
+        [Column("warehouse_id")]
+        public int WarehouseId { get; set; }
+
         [Column("user_id")]
         public int UserId { get; set; }
 
@@ -23,6 +26,10 @@ namespace InventoryManagement.Models
         [Column("quantity")]
         public int Quantity { get; set; }
 
+        [Column("unit")]
+        [MaxLength(50)]
+        public string Unit { get; set; } = string.Empty;
+
         [Column("note")]
         [MaxLength(500)]
         public string? Note { get; set; }
@@ -32,6 +39,7 @@ namespace InventoryManagement.Models
 
         // Navigation properties
         public Product? Product { get; set; }
+        public Warehouse? Warehouse { get; set; }
         public User? User { get; set; }
     }
 }

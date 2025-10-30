@@ -411,8 +411,6 @@ C:\Users\Admin\Downloads\CKok\InventoryManagement\bin\Debug\net8.0-windows\runti
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\InventoryManagement.csproj.AssemblyReference.cache
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Themes\Styles.baml
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\DashboardView.baml
-C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\InventoryHistoryDialog.baml
-C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\InventoryTransactionDialog.baml
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\ProductFormDialog.baml
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\ProductsView.baml
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\RegisterWindow.baml
@@ -421,8 +419,6 @@ C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Controls\PageShell.g.cs
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\MainWindow.g.cs
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\DashboardView.g.cs
-C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\InventoryHistoryDialog.g.cs
-C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\InventoryTransactionDialog.g.cs
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\LoginView.g.cs
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\LoginWindow.g.cs
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\ProductFormDialog.g.cs
@@ -454,3 +450,9 @@ C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Inven
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\ref\InventoryManagement.dll
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\AllHistoryDialog.baml
 C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\AllHistoryDialog.g.cs
+C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\UserFormDialog.baml
+C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\UserFormDialog.g.cs
+C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\TransactionDialog.baml
+C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\TransactionDialog.g.cs
+C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\ProductHistoryDialog.baml
+C:\Users\Admin\Downloads\CKok\InventoryManagement\obj\Debug\net8.0-windows\Views\ProductHistoryDialog.g.cs
