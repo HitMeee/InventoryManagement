@@ -1,0 +1,175 @@
+<Window x:Class="InventoryManagement.Views.TransactionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Giao dịch kho" 
+        Width="500" Height="550"
+        WindowStartupLocation="CenterOwner"
+        Background="#F8F9FA"
+        ResizeMode="NoResize">
+    
+    <Border Style="{DynamicResource CardStyle}" Margin="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                <Border x:Name="BorderIcon" CornerRadius="8" Padding="12">
+                    <TextBlock x:Name="TxtIcon" FontSize="20" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="TxtTitle" FontSize="18" FontWeight="Bold" Foreground="#1565C0"/>
+                    <TextBlock x:Name="TxtSubtitle" FontSize="12" Foreground="#666" Margin="0,2,0,0"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Product Info -->
+            <Border Grid.Row="1" Background="#F7FAFC" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="Thông tin sản phẩm" FontWeight="SemiBold" FontSize="14" Foreground="#2D3748" Margin="0,0,0,10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Tên sản phẩm:" FontWeight="Medium" Margin="0,0,10,5" Foreground="#4A5568"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="TxtProductName" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#2D3748"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Kho:" FontWeight="Medium" Margin="0,0,10,5" Foreground="#4A5568"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="TxtWarehouse" Margin="0,0,0,5" Foreground="#2D3748"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Tồn kho hiện tại:" FontWeight="Medium" Margin="0,0,10,0" Foreground="#4A5568"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="TxtCurrentStock" FontWeight="SemiBold" Foreground="#2D3748"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Quantity Input -->
+            <StackPanel Grid.Row="2" Margin="0,0,0,15">
+                <TextBlock x:Name="TxtQuantityLabel" Text="Số lượng:" FontWeight="SemiBold" FontSize="14" Foreground="#2D3748" Margin="0,0,0,8"/>
+                <Border Background="White" CornerRadius="6" BorderBrush="#D1D5DB" BorderThickness="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBox Grid.Column="0" x:Name="TxtQuantity" 
+                                 FontSize="16" FontWeight="Medium"
+                                 Padding="12,10" 
+                                 BorderThickness="0" 
+                                 Background="Transparent"
+                                 VerticalContentAlignment="Center"
+                                 TextChanged="TxtQuantity_TextChanged"/>
+                        
+                        <TextBlock Grid.Column="1" x:Name="TxtUnit" 
+                                   FontSize="14" FontWeight="Medium"
+                                   Foreground="#6B7280" 
+                                   VerticalAlignment="Center" 
+                                   Margin="0,0,12,0"/>
+                    </Grid>
+                </Border>
+                <TextBlock x:Name="TxtValidationMessage" 
+                           FontSize="12" Foreground="#EF4444" 
+                           Margin="0,5,0,0" 
+                           Visibility="Collapsed"/>
+            </StackPanel>
+
+            <!-- Note Input -->
+            <StackPanel Grid.Row="3" Margin="0,0,0,15">
+                <TextBlock Text="Ghi chú (tuỳ chọn):" FontWeight="SemiBold" FontSize="14" Foreground="#2D3748" Margin="0,0,0,8"/>
+                <Border Background="White" CornerRadius="6" BorderBrush="#D1D5DB" BorderThickness="1">
+                    <TextBox x:Name="TxtNote" 
+                             FontSize="13"
+                             Padding="12,8" 
+                             BorderThickness="0" 
+                             Background="Transparent"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             MaxLength="200"
+                             Height="50"/>
+                </Border>
+            </StackPanel>
+
+            <!-- Spacer -->
+            <Rectangle Grid.Row="4" Height="10"/>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="5" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Button Grid.Column="0" Content="Hủy" 
+                        Height="40" 
+                        Background="#6B7280" Foreground="White" 
+                        BorderThickness="0" FontWeight="SemiBold"
+                        Click="BtnCancel_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="6" 
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#4B5563"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
+                <Button Grid.Column="2" x:Name="BtnConfirm"
+                        Height="40" 
+                        Foreground="White" 
+                        BorderThickness="0" FontWeight="SemiBold"
+                        Click="BtnConfirm_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="6" 
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Opacity" Value="0.9"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

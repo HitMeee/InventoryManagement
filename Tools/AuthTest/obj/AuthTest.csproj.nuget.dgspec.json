@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj": {}
+    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj": {
+    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj",
         "projectName": "AuthTest",
-        "projectPath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj",
+        "projectPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AuthTest\\AuthTest.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Downloads\\ok\\InventoryManagement\\Tools\\AuthTest\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AuthTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
