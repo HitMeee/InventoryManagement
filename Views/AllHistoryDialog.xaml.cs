@@ -11,7 +11,7 @@ namespace InventoryManagement.Views
 {
     public partial class AllHistoryDialog : Window
     {
-        public class AllHistoryDisplay
+    public class AllHistoryDisplay
         {
             public string TransactionType { get; set; } = string.Empty;
             public string TransactionTypeDisplay { get; set; } = string.Empty;
@@ -21,6 +21,8 @@ namespace InventoryManagement.Views
             public string Unit { get; set; } = string.Empty;
             public DateTime CreatedAt { get; set; }
             public int WarehouseId { get; set; }
+            public string UserName { get; set; } = string.Empty;
+            public string Note { get; set; } = string.Empty;
         }
 
         public AllHistoryDialog()
@@ -86,106 +88,34 @@ namespace InventoryManagement.Views
         {
             try
             {
-                var logFile = "transactions.log";
-                if (!System.IO.File.Exists(logFile))
-                {
-                    return new List<AllHistoryDisplay>();
-                }
-
-                var transactions = new List<AllHistoryDisplay>();
-                var lines = System.IO.File.ReadAllLines(logFile, System.Text.Encoding.UTF8);
-
-                foreach (var line in lines)
-                {
-                    if (string.IsNullOrWhiteSpace(line)) continue;
-
-                    var parts = line.Split('\t');
-                    if (parts.Length >= 6)
+                using var db = new AppDbContext();
+                
+                // Load từ database với Include để lấy dữ liệu liên quan
+                var transactions = db.InventoryTransactions
+                    .Include(t => t.Product)
+                    .Include(t => t.Warehouse) 
+                    .Include(t => t.User)
+                    .OrderByDescending(t => t.CreatedAt)
+                    .Select(t => new AllHistoryDisplay
                     {
-                        if (DateTime.TryParse(parts[0], out DateTime createdAt))
-                        {
-                            var transaction = new AllHistoryDisplay
-                            {
-                                CreatedAt = createdAt,
-                                TransactionType = parts[1].Trim(),
-                                TransactionTypeDisplay = parts[1].Trim() == "IMPORT" ? "Nhập" : "Xuất",
-                                ProductName = parts[2].Trim(),
-                                WarehouseName = parts[3].Trim(),
-                                Quantity = int.TryParse(parts[4].Trim(), out int qty) ? qty : 0,
-                                Unit = parts[5].Trim(),
-                                WarehouseId = parts[3].Trim().Contains("Hà Nội") || parts[3].Trim().Contains("Hà nội") ? 1 : 2
-                            };
-                            transactions.Add(transaction);
-                        }
-                    }
-                    else
-                    {
-                        // Parse format bị lỗi, thử tách theo space
-                        var allParts = line.Replace('\t', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                        
-                        if (allParts.Length >= 5)
-                        {
-                            var typeIndex = Array.FindIndex(allParts, p => p == "IMPORT" || p == "EXPORT");
-                            if (typeIndex >= 0)
-                            {
-                                var productName = "";
-                                var quantity = 1;
-                                var unit = "cái";
-                                
-                                // Tìm tên sản phẩm
-                                for (int i = typeIndex + 1; i < allParts.Length; i++)
-                                {
-                                    if (!int.TryParse(allParts[i], out _) && 
-                                        !allParts[i].Contains("Hà") && 
-                                        allParts[i] != "kg" && allParts[i] != "cái")
-                                    {
-                                        productName += allParts[i] + " ";
-                                    }
-                                    else break;
-                                }
-                                
-                                // Tìm số lượng
-                                foreach (var part in allParts)
-                                {
-                                    if (int.TryParse(part, out int q) && q > 0 && q < 1000)
-                                    {
-                                        quantity = q;
-                                        break;
-                                    }
-                                }
-                                
-                                // Tìm đơn vị
-                                foreach (var part in allParts)
-                                {
-                                    if (part == "kg" || part == "cái" || part == "thùng")
-                                    {
-                                        unit = part;
-                                        break;
-                                    }
-                                }
+                        CreatedAt = t.CreatedAt,
+                        TransactionType = t.TransactionType,
+                        TransactionTypeDisplay = t.TransactionType == "IMPORT" ? "Nhập" : "Xuất",
+                        ProductName = t.Product != null ? t.Product.Name : "N/A",
+                        WarehouseName = t.Warehouse != null ? t.Warehouse.Name : "N/A",
+                        Quantity = t.Quantity,
+                        Unit = t.Unit,
+                        UserName = t.User != null ? t.User.Username : "N/A",
+                        Note = t.Note ?? "",
+                        WarehouseId = t.WarehouseId
+                    })
+                    .ToList();
 
-                                var transaction = new AllHistoryDisplay
-                                {
-                                    CreatedAt = DateTime.Now,
-                                    TransactionType = allParts[typeIndex],
-                                    TransactionTypeDisplay = allParts[typeIndex] == "IMPORT" ? "Nhập" : "Xuất",
-                                    ProductName = productName.Trim(),
-                                    WarehouseName = "Hà Nội",
-                                    Quantity = quantity,
-                                    Unit = unit,
-                                    WarehouseId = 1
-                                };
-                                transactions.Add(transaction);
-                            }
-                        }
-                    }
-                }
-
-                return transactions.OrderByDescending(t => t.CreatedAt).ToList();
+                return transactions;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi đọc file log: {ex.Message}", "Lỗi");
+                MessageBox.Show($"Lỗi đọc lịch sử từ database: {ex.Message}", "Lỗi");
                 return new List<AllHistoryDisplay>();
             }
         }

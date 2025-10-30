@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AddWarehouses")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+056d0c1393ed417286d18d0dbd9752fcc0bc8ffd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+602672522384aacbc8a37df4e2641282ca01e2b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("AddWarehouses")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AddWarehouses")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

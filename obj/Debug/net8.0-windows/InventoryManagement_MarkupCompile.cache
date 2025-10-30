@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\Admin\Downloads\CKok\InventoryManagement\App.xaml
-151334469052
+16523234533
 
-37-265639624
+411040035434
 216166984212
-Controls\PageShell.xaml;MainWindow.xaml;Themes\Styles.xaml;Views\AllHistoryDialog.xaml;Views\DashboardView.xaml;Views\InventoryHistoryDialog.xaml;Views\InventoryTransactionDialog.xaml;Views\LoginView.xaml;Views\LoginWindow.xaml;Views\ProductFormDialog.xaml;Views\ProductsView.xaml;Views\RegisterWindow.xaml;Views\UsersView.xaml;Views\WarehouseFormDialog.xaml;Views\WarehousesView.xaml;
+Controls\PageShell.xaml;MainWindow.xaml;Themes\Styles.xaml;Views\AllHistoryDialog.xaml;Views\DashboardView.xaml;Views\LoginView.xaml;Views\LoginWindow.xaml;Views\ProductFormDialog.xaml;Views\ProductHistoryDialog.xaml;Views\ProductsView.xaml;Views\RegisterWindow.xaml;Views\TransactionDialog.xaml;Views\UserFormDialog.xaml;Views\UsersView.xaml;Views\WarehouseFormDialog.xaml;Views\WarehousesView.xaml;
 
 False
 
