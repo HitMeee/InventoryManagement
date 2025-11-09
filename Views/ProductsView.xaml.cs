@@ -34,7 +34,18 @@ namespace InventoryManagement.Views
         {
             // Đợi UI render xong
             await System.Threading.Tasks.Task.Delay(100);
-            
+            // Hide add/edit/delete for Staff role
+            try
+            {
+                if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+                {
+                    if (BtnAdd != null) BtnAdd.Visibility = System.Windows.Visibility.Collapsed;
+                    if (BtnEdit != null) BtnEdit.Visibility = System.Windows.Visibility.Collapsed;
+                    if (BtnDelete != null) BtnDelete.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
+            catch { }
+
             LoadWarehouses();
             LoadProducts();
         }
@@ -158,6 +169,12 @@ namespace InventoryManagement.Views
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
+            // Prevent Staff from adding
+            if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+            {
+                MessageBox.Show("Bạn không có quyền thêm sản phẩm.", "Quyền truy cập", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 if (CboWarehouse?.SelectedValue == null)
@@ -196,6 +213,12 @@ namespace InventoryManagement.Views
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
+            // Prevent Staff from editing
+            if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+            {
+                MessageBox.Show("Bạn không có quyền sửa sản phẩm.", "Quyền truy cập", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 var selected = DgProducts.SelectedItem as ProductDisplay;
@@ -233,6 +256,12 @@ namespace InventoryManagement.Views
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
+            // Prevent Staff from deleting
+            if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+            {
+                MessageBox.Show("Bạn không có quyền xóa sản phẩm.", "Quyền truy cập", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 var selected = DgProducts.SelectedItem as ProductDisplay;
