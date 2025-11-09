@@ -56,6 +56,7 @@ namespace InventoryManagement.Data
         }
 
         public DbSet<Product> Products { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserWarehouseRole> UserWarehouseRoles { get; set; }
@@ -76,6 +77,7 @@ namespace InventoryManagement.Data
             modelBuilder.Entity<User>().ToTable("users");
             modelBuilder.Entity<Warehouse>().ToTable("warehouses");
             modelBuilder.Entity<Product>().ToTable("products");
+            modelBuilder.Entity<Supplier>().ToTable("suppliers");
             modelBuilder.Entity<UserWarehouseRole>().ToTable("user_warehouse_roles");
             modelBuilder.Entity<InventoryTransaction>().ToTable("inventory_transactions");
 
@@ -102,6 +104,12 @@ namespace InventoryManagement.Data
                 .WithMany(w => w.Products)
                 .HasForeignKey(p => p.WarehouseId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Supplier)
+                .WithMany()
+                .HasForeignKey(p => p.SupplierId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<InventoryTransaction>()
                 .HasOne(it => it.Product)

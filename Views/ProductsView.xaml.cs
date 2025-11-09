@@ -21,6 +21,8 @@ namespace InventoryManagement.Views
             public string Unit { get; set; } = string.Empty;
             public int WarehouseId { get; set; }
             public string WarehouseName { get; set; } = string.Empty;
+            public int? SupplierId { get; set; }
+            public string SupplierName { get; set; } = string.Empty;
             public DateTime CreatedAt { get; set; }
         }
 
@@ -134,6 +136,8 @@ namespace InventoryManagement.Views
                     Unit = p.Unit,
                     WarehouseId = p.WarehouseId,
                     WarehouseName = db.Warehouses.Where(w => w.Id == p.WarehouseId).Select(w => w.Name).FirstOrDefault() ?? "",
+                    SupplierId = p.SupplierId,
+                    SupplierName = db.Suppliers.Where(s => s.Id == p.SupplierId).Select(s => s.Name).FirstOrDefault() ?? "",
                     CreatedAt = p.CreatedAt
                 }).ToList();
 
@@ -196,6 +200,7 @@ namespace InventoryManagement.Views
                         Quantity = dialog.Quantity,
                         Unit = dialog.Unit,
                         WarehouseId = dialog.WarehouseId,
+                        SupplierId = dialog.SupplierId,
                         CreatedAt = DateTime.UtcNow
                     };
                     db.Products.Add(product);
@@ -230,6 +235,8 @@ namespace InventoryManagement.Views
 
                 var dialog = new ProductFormDialog(selected.WarehouseId, selected.Name, selected.Quantity, selected.Unit);
                 dialog.Owner = Window.GetWindow(this);
+                    // pre-select supplier for edit
+                    dialog.SupplierId = selected.SupplierId;
                 
                 if (dialog.ShowDialog() == true)
                 {
@@ -241,6 +248,7 @@ namespace InventoryManagement.Views
                         product.Quantity = dialog.Quantity;
                         product.Unit = dialog.Unit;
                         product.WarehouseId = dialog.WarehouseId;
+                            product.SupplierId = dialog.SupplierId;
                         db.SaveChanges();
                         
                         LoadProducts();

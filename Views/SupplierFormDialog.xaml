@@ -1,0 +1,25 @@
+<Window x:Class="InventoryManagement.Views.SupplierFormDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nhà cung cấp" Height="220" Width="420" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Tên nhà cung cấp" Grid.Row="0" FontWeight="SemiBold"/>
+        <TextBox x:Name="TxtName" Grid.Row="1" Height="34" Margin="0,6,0,0"/>
+
+        <TextBlock Text="Liên hệ" Grid.Row="2" Margin="0,12,0,0"/>
+        <TextBox x:Name="TxtContact" Grid.Row="3" Height="34" Margin="0,6,0,0"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="4" Margin="0,12,0,0">
+            <Button Content="Hủy" Width="100" Margin="0,0,8,0" Click="BtnCancel_Click"/>
+            <Button Content="Lưu" Width="100" Click="BtnSave_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -61,6 +61,8 @@ namespace InventoryManagement
                 {
                     new MenuEntry("home","Trang chủ", RolePermissionService.Features.ViewStock, () => CreateDashboard()),
                     new MenuEntry("products","Sản phẩm", RolePermissionService.Features.ManageProducts, () => (UserControl)new Views.ProductsView()),
+                    new MenuEntry("suppliers","Nhà cung cấp", RolePermissionService.Features.ManageSuppliers, () => (UserControl)new Views.SuppliersView()),
+                    new MenuEntry("reports","Báo cáo", RolePermissionService.Features.ViewAnalyticsDashboard, () => (UserControl)new Views.ReportsView()),
                     new MenuEntry("warehouses","Kho hàng", RolePermissionService.Features.ViewStock, () => (UserControl)new Views.WarehousesView()),
                     new MenuEntry("users","Người dùng", RolePermissionService.Features.ManageUsers, () => (UserControl)new Views.UsersView())
                 };
