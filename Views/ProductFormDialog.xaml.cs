@@ -12,6 +12,7 @@ namespace InventoryManagement.Views
         public int Quantity { get; set; }
         public string Unit { get; set; } = string.Empty;
         public int WarehouseId { get; set; }
+    public int? SupplierId { get; set; }
     // Use DialogResult to indicate saved/cancelled state
 
         public ProductFormDialog(int? selectedWarehouseId = null, string name = "", int quantity = 0, string unit = "")
@@ -26,6 +27,7 @@ namespace InventoryManagement.Views
                     try
                     {
                         LoadWarehouses();
+                        LoadSuppliers();
                 
                         TxtName.Text = name ?? string.Empty;
                         TxtQuantity.Text = quantity.ToString();
@@ -34,6 +36,12 @@ namespace InventoryManagement.Views
                         if (selectedWarehouseId.HasValue && selectedWarehouseId.Value > 0)
                         {
                             CboWarehouse.SelectedValue = selectedWarehouseId.Value;
+                        }
+
+                        // If supplier pre-assigned, try to select
+                        if (SupplierId.HasValue)
+                        {
+                            CboSupplier.SelectedValue = SupplierId.Value;
                         }
                 
                         TxtName.Focus();
@@ -57,13 +65,46 @@ namespace InventoryManagement.Views
             try
             {
                 using var db = new AppDbContext();
-                var warehouses = db.Warehouses.OrderBy(w => w.Name).ToList();
+                var q = db.Warehouses.AsQueryable();
+                if (Services.AuthService.IsOwner())
+                {
+                    var ownerId = Services.AuthService.CurrentUser?.Id ?? -1;
+                    q = q.Where(w => w.OwnerId == ownerId);
+                }
+                else if (Services.AuthService.IsAdmin())
+                {
+                    var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
+                    q = q.Where(w => ids.Contains(w.Id));
+                }
+                else
+                {
+                    // Staff: only warehouses assigned to them
+                    var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
+                    q = q.Where(w => ids.Contains(w.Id));
+                }
+                var warehouses = q.OrderBy(w => w.Name).ToList();
                 CboWarehouse.ItemsSource = warehouses;
+                if (warehouses.Count > 0 && (CboWarehouse.SelectedValue == null)) CboWarehouse.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi tải danh sách kho: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LoadSuppliers()
+        {
+            try
+            {
+                using var db = new AppDbContext();
+                var suppliers = db.Suppliers.OrderBy(s => s.Name).ToList();
+                CboSupplier.ItemsSource = suppliers;
+                if (suppliers.Count > 0 && (CboSupplier.SelectedValue == null)) CboSupplier.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi tải danh sách nhà cung cấp: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -105,10 +146,20 @@ namespace InventoryManagement.Views
                 return;
             }
 
+            // Validate supplier
+            if (CboSupplier.SelectedValue == null)
+            {
+                MessageBox.Show("Vui lòng chọn nhà cung cấp!", "Thông báo",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                CboSupplier.Focus();
+                return;
+            }
+
             ProductName = TxtName.Text.Trim();
             Quantity = qty;
             Unit = TxtUnit.Text.Trim();
             WarehouseId = (int)CboWarehouse.SelectedValue;
+            SupplierId = (int?)CboSupplier.SelectedValue;
             DialogResult = true;
             Close();
         }

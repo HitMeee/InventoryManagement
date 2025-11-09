@@ -61,6 +61,8 @@ namespace InventoryManagement
                 {
                     new MenuEntry("home","Trang chủ", RolePermissionService.Features.ViewStock, () => CreateDashboard()),
                     new MenuEntry("products","Sản phẩm", RolePermissionService.Features.ManageProducts, () => (UserControl)new Views.ProductsView()),
+                    new MenuEntry("suppliers","Nhà cung cấp", RolePermissionService.Features.ManageSuppliers, () => (UserControl)new Views.SuppliersView()),
+                    new MenuEntry("reports","Báo cáo", RolePermissionService.Features.ViewAnalyticsDashboard, () => (UserControl)new Views.ReportsView()),
                     new MenuEntry("warehouses","Kho hàng", RolePermissionService.Features.ViewStock, () => (UserControl)new Views.WarehousesView()),
                     new MenuEntry("users","Người dùng", RolePermissionService.Features.ManageUsers, () => (UserControl)new Views.UsersView())
                 };
@@ -73,6 +75,13 @@ namespace InventoryManagement
                     var feature = item.Feature;
                     var factory = item.Factory;
                     if (!RolePermissionService.HasPermission(user.Role, feature)) continue;
+
+                    // Ẩn mục "Kho hàng" đối với Nhân viên kho
+                    if (string.Equals(key, "warehouses", StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(user.Role, "Nhân viên kho", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
 
                     var btn = new Button { Content = title, Tag = key, Style = (Style)FindResource("NavButtonStyle"), Margin = new Thickness(4), HorizontalAlignment = HorizontalAlignment.Stretch };
                     btn.Click += (s, ea) =>

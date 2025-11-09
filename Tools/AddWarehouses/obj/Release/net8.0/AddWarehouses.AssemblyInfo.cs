@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AddWarehouses")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e001c1a6c5dd53f12ad00531b3c3636c091d8fb6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+899ae1d9bea482bea3cbfc17d897b4090df95ffe")]
 [assembly: System.Reflection.AssemblyProductAttribute("AddWarehouses")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AddWarehouses")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

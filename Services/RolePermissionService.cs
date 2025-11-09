@@ -16,10 +16,12 @@ namespace InventoryManagement.Services
             public const string LowStockAlert = "LowStockAlert";
             public const string ViewStock = "ViewStock";
             public const string ManageOrders = "ManageOrders";
+            public const string ManageSuppliers = "ManageSuppliers";
             public const string ViewInOutHistory = "ViewInOutHistory";
             public const string ViewStockReports = "ViewStockReports";
             public const string ViewSalesReports = "ViewSalesReports";
             public const string ExportReports = "ExportReports";
+            public const string ViewAnalyticsDashboard = "ViewAnalyticsDashboard";
             public const string SystemConfig = "SystemConfig";
             public const string Logout = "Logout";
         }
@@ -28,6 +30,7 @@ namespace InventoryManagement.Services
         {
             ["Chủ kho"] = new HashSet<string>
             {
+                Features.ManageSuppliers,
                 Features.ManageUsers,
                 Features.ManageProducts,
                 Features.SearchProducts,
@@ -39,11 +42,13 @@ namespace InventoryManagement.Services
                 Features.ViewStockReports,
                 Features.ViewSalesReports,
                 Features.ExportReports,
+                Features.ViewAnalyticsDashboard,
                 Features.SystemConfig,
                 Features.Logout
             },
             ["Admin"] = new HashSet<string>
             {
+                Features.ManageSuppliers,
                 Features.ManageUsers,
                 Features.ManageProducts,
                 Features.SearchProducts,
@@ -55,6 +60,7 @@ namespace InventoryManagement.Services
                 Features.ViewStockReports,
                 Features.ViewSalesReports,
                 Features.ExportReports,
+                Features.ViewAnalyticsDashboard,
                 Features.SystemConfig,
                 Features.Logout
             },
@@ -68,6 +74,7 @@ namespace InventoryManagement.Services
                 Features.ViewInOutHistory,
                 Features.ViewStockReports,
                 Features.ExportReports,
+                Features.ViewAnalyticsDashboard,
                 Features.Logout
             },
             ["Nhân viên bán hàng"] = new HashSet<string>
@@ -78,6 +85,7 @@ namespace InventoryManagement.Services
                 Features.ManageOrders,
                 Features.ViewSalesReports,
                 Features.ExportReports,
+                Features.ViewAnalyticsDashboard,
                 Features.Logout
             }
         };

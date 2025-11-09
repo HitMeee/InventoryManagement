@@ -92,6 +92,69 @@ SELECT id,user_id,warehouse_id,role,created_at FROM user_warehouse_roles";
 );";
                 cmd.ExecuteNonQuery();
 
+                // Ensure products has supplier_id column
+                cmd.CommandText = "PRAGMA table_info(products);";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    bool hasSupplier = false;
+                    while (reader.Read())
+                    {
+                        var colName = reader[1]?.ToString() ?? string.Empty;
+                        if (string.Equals(colName, "supplier_id", System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            hasSupplier = true;
+                            break;
+                        }
+                    }
+                    reader.Close();
+                    if (!hasSupplier)
+                    {
+                        // safe to add nullable column
+                        cmd.CommandText = "ALTER TABLE products ADD COLUMN supplier_id INTEGER;";
+                        try { cmd.ExecuteNonQuery(); } catch { }
+                    }
+                }
+
+                // Suppliers table
+                cmd.CommandText = @"CREATE TABLE IF NOT EXISTS suppliers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    contact TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+);";
+                cmd.ExecuteNonQuery();
+
+                // Indexes for suppliers/products.supplier_id
+                cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_products_supplier ON products(supplier_id);";
+                cmd.ExecuteNonQuery();
+                cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_suppliers_name ON suppliers(name);";
+                cmd.ExecuteNonQuery();
+
+                                    // Inventory transactions table (IMPORT/EXPORT history)
+                                    cmd.CommandText = @"CREATE TABLE IF NOT EXISTS inventory_transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER NOT NULL,
+        warehouse_id INTEGER NOT NULL,
+        user_id INTEGER,
+        transaction_type TEXT NOT NULL CHECK (transaction_type IN ('IMPORT','EXPORT')),
+        quantity REAL NOT NULL,
+        unit TEXT,
+        note TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+        FOREIGN KEY (product_id) REFERENCES products(id),
+        FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    );";
+                                    cmd.ExecuteNonQuery();
+
+                                    // Indexes for inventory_transactions
+                                    cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_inventory_transactions_product ON inventory_transactions(product_id);";
+                                    cmd.ExecuteNonQuery();
+                                    cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_inventory_transactions_warehouse ON inventory_transactions(warehouse_id);";
+                                    cmd.ExecuteNonQuery();
+                                    cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_inventory_transactions_created_at ON inventory_transactions(created_at);";
+                                    cmd.ExecuteNonQuery();
+
                 cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_user_warehouse_roles_user ON user_warehouse_roles(user_id);";
                 cmd.ExecuteNonQuery();
                 cmd.CommandText = @"CREATE INDEX IF NOT EXISTS idx_user_warehouse_roles_warehouse ON user_warehouse_roles(warehouse_id);";

@@ -15,7 +15,7 @@
         <TextBlock Grid.Row="0" Text="Trang chủ" FontSize="28" FontWeight="Bold" Foreground="#0F274C" Margin="0,0,0,20"/>
 
         <!-- Stats Cards -->
-        <Grid Grid.Row="1" Margin="0,0,0,20">
+    <Grid x:Name="StatsGrid" Grid.Row="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -38,7 +38,7 @@
 
             <Border Grid.Column="2" Background="#FFF3E0" CornerRadius="8" Padding="16" Margin="10,0,0,0">
                 <StackPanel>
-                    <TextBlock Text="Tổng số người dùng" FontSize="14" Foreground="#F57C00"/>
+                    <TextBlock Text="Số lượng nhân viên" FontSize="14" Foreground="#F57C00"/>
                     <TextBlock x:Name="TxtUserCount" Text="0" FontSize="32" FontWeight="Bold" Foreground="#E65100"/>
                 </StackPanel>
             </Border>

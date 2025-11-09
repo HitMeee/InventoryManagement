@@ -106,9 +106,31 @@ namespace InventoryManagement.Views
                         ctx.SaveChanges();
 
                         MessageBox.Show("Đăng ký Chủ kho thành công và đã tạo kho sở hữu.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-                        this.DialogResult = true;
-                        this.Close();
-                        return;
+                        // Tự động đăng nhập và chuyển thẳng vào Trang chủ
+                        var auth = InventoryManagement.Services.AuthService.Authenticate(username, password);
+                        if (auth == InventoryManagement.Services.AuthService.AuthResult.Success)
+                        {
+                            // Đóng LoginWindow với DialogResult = true để App mở MainWindow
+                            if (this.Owner is Views.LoginWindow lw)
+                            {
+                                try { lw.DialogResult = true; } catch { }
+                            }
+                            // Đóng cửa sổ đăng ký
+                            this.DialogResult = true;
+                            this.Close();
+                            return;
+                        }
+                        else
+                        {
+                            // Nếu không tự đăng nhập được, quay về màn hình đăng nhập như cũ
+                            if (this.Owner is Views.LoginWindow lw)
+                            {
+                                try { lw.Show(); lw.Activate(); } catch { }
+                            }
+                            this.DialogResult = true;
+                            this.Close();
+                            return;
+                        }
                     }
                     else
                     {
@@ -130,6 +152,11 @@ namespace InventoryManagement.Views
                     ctx.SaveChanges();
 
                     MessageBox.Show("Đăng ký Admin thành công. Vui lòng đăng nhập lại.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Quay lại màn hình đăng nhập (nếu được mở từ LoginWindow)
+                    if (this.Owner is Views.LoginWindow lw)
+                    {
+                        try { lw.Show(); lw.Activate(); } catch { }
+                    }
                     this.DialogResult = true;
                     this.Close();
                 }

@@ -21,6 +21,8 @@ namespace InventoryManagement.Views
             public string Unit { get; set; } = string.Empty;
             public int WarehouseId { get; set; }
             public string WarehouseName { get; set; } = string.Empty;
+            public int? SupplierId { get; set; }
+            public string SupplierName { get; set; } = string.Empty;
             public DateTime CreatedAt { get; set; }
         }
 
@@ -34,7 +36,18 @@ namespace InventoryManagement.Views
         {
             // Đợi UI render xong
             await System.Threading.Tasks.Task.Delay(100);
-            
+            // Hide add/edit/delete for Staff role
+            try
+            {
+                if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+                {
+                    if (BtnAdd != null) BtnAdd.Visibility = System.Windows.Visibility.Collapsed;
+                    if (BtnEdit != null) BtnEdit.Visibility = System.Windows.Visibility.Collapsed;
+                    if (BtnDelete != null) BtnDelete.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
+            catch { }
+
             LoadWarehouses();
             LoadProducts();
         }
@@ -50,7 +63,13 @@ namespace InventoryManagement.Views
                     var ownerId = Services.AuthService.CurrentUser?.Id ?? -1;
                     q = q.Where(w => w.OwnerId == ownerId);
                 }
-                else if (!Services.AuthService.IsAdmin())
+                else if (Services.AuthService.IsAdmin())
+                {
+                    // Admin: chỉ thấy các kho được phân công
+                    var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
+                    q = q.Where(w => ids.Contains(w.Id));
+                }
+                else
                 {
                     // Staff: only warehouses assigned to them
                     var ids = Services.AuthService.CurrentUserWarehouseIds ?? new System.Collections.Generic.List<int>();
@@ -117,6 +136,8 @@ namespace InventoryManagement.Views
                     Unit = p.Unit,
                     WarehouseId = p.WarehouseId,
                     WarehouseName = db.Warehouses.Where(w => w.Id == p.WarehouseId).Select(w => w.Name).FirstOrDefault() ?? "",
+                    SupplierId = p.SupplierId,
+                    SupplierName = db.Suppliers.Where(s => s.Id == p.SupplierId).Select(s => s.Name).FirstOrDefault() ?? "",
                     CreatedAt = p.CreatedAt
                 }).ToList();
 
@@ -152,6 +173,12 @@ namespace InventoryManagement.Views
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
+            // Prevent Staff from adding
+            if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+            {
+                MessageBox.Show("Bạn không có quyền thêm sản phẩm.", "Quyền truy cập", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 if (CboWarehouse?.SelectedValue == null)
@@ -173,6 +200,7 @@ namespace InventoryManagement.Views
                         Quantity = dialog.Quantity,
                         Unit = dialog.Unit,
                         WarehouseId = dialog.WarehouseId,
+                        SupplierId = dialog.SupplierId,
                         CreatedAt = DateTime.UtcNow
                     };
                     db.Products.Add(product);
@@ -190,6 +218,12 @@ namespace InventoryManagement.Views
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
+            // Prevent Staff from editing
+            if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+            {
+                MessageBox.Show("Bạn không có quyền sửa sản phẩm.", "Quyền truy cập", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 var selected = DgProducts.SelectedItem as ProductDisplay;
@@ -201,6 +235,8 @@ namespace InventoryManagement.Views
 
                 var dialog = new ProductFormDialog(selected.WarehouseId, selected.Name, selected.Quantity, selected.Unit);
                 dialog.Owner = Window.GetWindow(this);
+                    // pre-select supplier for edit
+                    dialog.SupplierId = selected.SupplierId;
                 
                 if (dialog.ShowDialog() == true)
                 {
@@ -212,6 +248,7 @@ namespace InventoryManagement.Views
                         product.Quantity = dialog.Quantity;
                         product.Unit = dialog.Unit;
                         product.WarehouseId = dialog.WarehouseId;
+                            product.SupplierId = dialog.SupplierId;
                         db.SaveChanges();
                         
                         LoadProducts();
@@ -227,6 +264,12 @@ namespace InventoryManagement.Views
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
+            // Prevent Staff from deleting
+            if (!Services.AuthService.IsOwner() && !Services.AuthService.IsAdmin())
+            {
+                MessageBox.Show("Bạn không có quyền xóa sản phẩm.", "Quyền truy cập", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 var selected = DgProducts.SelectedItem as ProductDisplay;
