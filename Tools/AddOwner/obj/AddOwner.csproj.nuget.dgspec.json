@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj": {}
+    "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj": {
+    "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj",
         "projectName": "AddOwner",
-        "projectPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj",
+        "projectPath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\AddOwner\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\AddOwner\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

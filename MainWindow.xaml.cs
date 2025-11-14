@@ -59,7 +59,6 @@ namespace InventoryManagement
 
                 var menu = new List<MenuEntry>
                 {
-                    new MenuEntry("home","Trang chủ", RolePermissionService.Features.ViewStock, () => CreateDashboard()),
                     new MenuEntry("products","Sản phẩm", RolePermissionService.Features.ManageProducts, () => (UserControl)new Views.ProductsView()),
                     new MenuEntry("suppliers","Nhà cung cấp", RolePermissionService.Features.ManageSuppliers, () => (UserControl)new Views.SuppliersView()),
                     new MenuEntry("reports","Báo cáo", RolePermissionService.Features.ViewAnalyticsDashboard, () => (UserControl)new Views.ReportsView()),
@@ -110,11 +109,6 @@ namespace InventoryManagement
             {
                 MessageBox.Show($"Lỗi khi khởi tạo giao diện chính: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private UserControl CreateDashboard()
-        {
-            return (UserControl)new Views.DashboardView();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)

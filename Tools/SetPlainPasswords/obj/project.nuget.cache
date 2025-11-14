@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gtmB2DAPPOc=",
+  "dgSpecHash": "NKlc/nVieaI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\SetPlainPasswords\\SetPlainPasswords.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\SetPlainPasswords\\SetPlainPasswords.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\9.0.10\\microsoft.data.sqlite.9.0.10.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.10\\microsoft.data.sqlite.core.9.0.10.nupkg.sha512",

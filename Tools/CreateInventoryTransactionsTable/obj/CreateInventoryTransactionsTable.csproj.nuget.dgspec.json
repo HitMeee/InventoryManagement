@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj": {}
+    "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj": {
+    "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj",
         "projectName": "CreateInventoryTransactionsTable",
-        "projectPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj",
+        "projectPath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

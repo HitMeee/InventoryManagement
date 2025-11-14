@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "pHfXydPV4FQ=",
+  "dgSpecHash": "NgIv4v+vsAM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CKok\\InventoryManagement\\Tools\\CreateDb\\CreateDb.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateDb\\CreateDb.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\9.0.10\\microsoft.data.sqlite.9.0.10.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.10\\microsoft.data.sqlite.core.9.0.10.nupkg.sha512",

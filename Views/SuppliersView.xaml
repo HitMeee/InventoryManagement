@@ -4,31 +4,61 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="900">
+
     <Grid Margin="12">
+        <!-- Chia giao diện thành 3 cột -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="3*" /> <!-- Bên trái: danh sách nhà cung cấp -->
+            <ColumnDefinition Width="5" />  <!-- Thanh chia -->
+            <ColumnDefinition Width="5*" /> <!-- Bên phải: sản phẩm theo nhà cung cấp -->
         </Grid.ColumnDefinitions>
+
+        <!-- ======= CỘT TRÁI: NHÀ CUNG CẤP ======= -->
         <StackPanel Grid.Column="0">
             <TextBlock Text="Quản lý Nhà cung cấp" FontSize="26" FontWeight="Bold" Foreground="#0F274C" Margin="0,0,0,12"/>
+
+            <!-- Hàng chứa nút thêm / sửa / xóa -->
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+
+                <!-- Các nút thao tác -->
                 <StackPanel Orientation="Horizontal" Grid.Column="0">
-                    <Button x:Name="BtnAddSupplier" Content="+ Thêm nhà cung cấp" Padding="12,6" Click="BtnAddSupplier_Click" Background="#1976D2" Foreground="White" Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
-                    <Button x:Name="BtnEditSupplier" Content="✏️ Sửa" Padding="12,6" Click="BtnEditSupplier_Click" Background="#F57C00" Foreground="White" Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
-                    <Button x:Name="BtnDeleteSupplier" Content="🗑️ Xóa" Padding="12,6" Click="BtnDeleteSupplier_Click" Background="#D32F2F" Foreground="White" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
+                    <Button x:Name="BtnAddSupplier" Content="+ Thêm nhà cung cấp" Padding="12,6"
+                            Click="BtnAddSupplier_Click" Background="#1976D2" Foreground="White"
+                            Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
+
+                    <Button x:Name="BtnEditSupplier" Content="✏️ Sửa" Padding="12,6"
+                            Click="BtnEditSupplier_Click" Background="#F57C00" Foreground="White"
+                            Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
+
+                    <Button x:Name="BtnDeleteSupplier" Content="🗑️ Xóa" Padding="12,6"
+                            Click="BtnDeleteSupplier_Click" Background="#D32F2F" Foreground="White"
+                            FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
                 </StackPanel>
+
+                <!-- Chỗ để sau này thêm tìm kiếm -->
                 <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <!-- Placeholder for future search/filter -->
+                    <!-- Placeholder -->
                 </StackPanel>
             </Grid>
-            <DataGrid x:Name="DgSuppliers" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowHeight="40" Height="400"
-                      CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
-                      Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" HorizontalGridLinesBrush="#E0E0E0" BorderBrush="#BBDEFB" BorderThickness="1">
+
+            <!-- Bảng danh sách nhà cung cấp -->
+            <DataGrid x:Name="DgSuppliers"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      RowHeight="40"
+                      Height="400"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      Background="White"
+                      AlternatingRowBackground="#F8F9FA"
+                      FontSize="13">
+
+                <!-- Style header bảng -->
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="FontWeight" Value="Bold"/>
@@ -36,18 +66,14 @@
                         <Setter Property="Background" Value="#E3F2FD"/>
                         <Setter Property="Foreground" Value="#1565C0"/>
                         <Setter Property="Padding" Value="10,8"/>
-                        <Setter Property="BorderBrush" Value="#BBDEFB"/>
-                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="MinHeight" Value="40"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
+
+                <!-- Style từng ô -->
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="Padding" Value="8,5"/>
                         <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Background" Value="#E3F2FD"/>
@@ -56,35 +82,60 @@
                         </Style.Triggers>
                     </Style>
                 </DataGrid.CellStyle>
+
+                <!-- Các cột -->
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
                     <DataGridTextColumn Header="Tên nhà cung cấp" Binding="{Binding Name}" Width="*"/>
                     <DataGridTextColumn Header="Số sản phẩm" Binding="{Binding ProductCount}" Width="120"/>
                 </DataGrid.Columns>
+
             </DataGrid>
         </StackPanel>
 
+
+        <!-- Thanh chia layout giữa 2 panel -->
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
+
+        <!-- ======= CỘT PHẢI: SẢN PHẨM CỦA NHÀ CUNG CẤP ======= -->
         <StackPanel Grid.Column="2">
-            <TextBlock Text="Sản phẩm từ nhà cung cấp" FontSize="26" FontWeight="Bold" Foreground="#0F274C" Margin="0,0,0,12"/>
+
+            <TextBlock Text="Sản phẩm từ nhà cung cấp" FontSize="26" FontWeight="Bold"
+                       Foreground="#0F274C" Margin="0,0,0,12"/>
+
+            <!-- Thanh nút thêm/sửa/xóa -->
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+
                 <StackPanel Orientation="Horizontal" Grid.Column="0">
-                    <Button x:Name="BtnAddSupplierProduct" Content="+ Thêm" Padding="12,6" Click="BtnAddSupplierProduct_Click" Background="#1976D2" Foreground="White" Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
-                    <Button x:Name="BtnEditSupplierProduct" Content="✏️ Sửa" Padding="12,6" Click="BtnEditSupplierProduct_Click" Background="#F57C00" Foreground="White" Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
-                    <Button x:Name="BtnDeleteSupplierProduct" Content="🗑️ Xóa" Padding="12,6" Click="BtnDeleteSupplierProduct_Click" Background="#D32F2F" Foreground="White" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <!-- Placeholder future actions -->
+                    <Button x:Name="BtnAddSupplierProduct" Content="+ Thêm" Padding="12,6"
+                            Click="BtnAddSupplierProduct_Click" Background="#1976D2" Foreground="White"
+                            Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
+
+                    <Button x:Name="BtnEditSupplierProduct" Content="✏️ Sửa" Padding="12,6"
+                            Click="BtnEditSupplierProduct_Click" Background="#F57C00" Foreground="White"
+                            Margin="0,0,8,0" FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
+
+                    <Button x:Name="BtnDeleteSupplierProduct" Content="🗑️ Xóa" Padding="12,6"
+                            Click="BtnDeleteSupplierProduct_Click" Background="#D32F2F" Foreground="White"
+                            FontWeight="SemiBold" FontSize="13" BorderThickness="0"/>
                 </StackPanel>
             </Grid>
-            <DataGrid x:Name="DgSupplierProducts" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" RowHeight="38"
-                      CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
-                      Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" HorizontalGridLinesBrush="#E0E0E0" BorderBrush="#BBDEFB" BorderThickness="1">
+
+            <!-- Bảng liệt kê sản phẩm của nhà cung cấp -->
+            <DataGrid x:Name="DgSupplierProducts"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      RowHeight="38"
+                      Background="White"
+                      AlternatingRowBackground="#F8F9FA"
+                      FontSize="13">
+
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="FontWeight" Value="Bold"/>
@@ -92,26 +143,9 @@
                         <Setter Property="Background" Value="#E3F2FD"/>
                         <Setter Property="Foreground" Value="#1565C0"/>
                         <Setter Property="Padding" Value="10,8"/>
-                        <Setter Property="BorderBrush" Value="#BBDEFB"/>
-                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="MinHeight" Value="40"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
-                <DataGrid.CellStyle>
-                    <Style TargetType="DataGridCell">
-                        <Setter Property="Padding" Value="8,5"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#E3F2FD"/>
-                                <Setter Property="Foreground" Value="#1565C0"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.CellStyle>
+
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
                     <DataGridTextColumn Header="Tên sản phẩm" Binding="{Binding Name}" Width="3*"/>
@@ -120,7 +154,9 @@
                     <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="2*"/>
                     <DataGridTextColumn Header="Ngày tạo" Binding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="170"/>
                 </DataGrid.Columns>
+
             </DataGrid>
         </StackPanel>
+
     </Grid>
 </UserControl>
