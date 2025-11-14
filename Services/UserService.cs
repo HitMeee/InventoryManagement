@@ -101,6 +101,14 @@ namespace InventoryManagement.Services
                 ctx.UserWarehouseRoles.RemoveRange(maps);
             }
 
+            // Hard-delete dependent data not guaranteed by DB-level cascade (e.g., inventory_transactions.user_id)
+            // In SQLite schema, user_id FK does not specify ON DELETE CASCADE; ensure cleanup here.
+            var txs = ctx.InventoryTransactions.Where(t => t.UserId == id).ToList();
+            if (txs.Count > 0)
+            {
+                ctx.InventoryTransactions.RemoveRange(txs);
+            }
+
             ctx.Users.Remove(e);
             return ctx.SaveChanges() > 0;
         }

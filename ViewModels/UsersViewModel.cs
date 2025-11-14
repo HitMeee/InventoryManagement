@@ -54,6 +54,8 @@ namespace InventoryManagement.ViewModels
             var isAdmin = Services.AuthService.IsAdmin();
             var isOwner = Services.AuthService.IsOwner();
             var currentIds = Services.AuthService.CurrentUserWarehouseIds;
+
+            // Build warehouse list for the dropdown according to role
             if (isOwner)
             {
                 var ownerId = Services.AuthService.CurrentUser?.Id ?? -1;
@@ -70,8 +72,20 @@ namespace InventoryManagement.ViewModels
             if (Warehouses.Count > 0) SelectedWarehouse = Warehouses[0];
 
             Users.Clear();
-            // Restrict Admin and Owner to only users within their scoped warehouses
-            foreach (var t in _service.GetAllWithDetails(false, currentIds))
+            // Determine scope for listing users: Owner = all owner-owned warehouses; Admin/Staff = assigned warehouses
+            List<int> scopeIdsForUsers;
+            if (isOwner)
+            {
+                var ownerId = Services.AuthService.CurrentUser?.Id ?? -1;
+                scopeIdsForUsers = allWh.Where(w => w.OwnerId == ownerId).Select(w => w.Id).ToList();
+            }
+            else
+            {
+                scopeIdsForUsers = currentIds ?? new List<int>();
+            }
+
+            // Restrict results to users who share at least one warehouse within scopeIdsForUsers
+            foreach (var t in _service.GetAllWithDetails(false, scopeIdsForUsers))
             {
                 Users.Add(new UserListItem
                 {
