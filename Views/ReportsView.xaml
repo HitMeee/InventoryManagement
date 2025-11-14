@@ -17,11 +17,17 @@
         <!-- Filters -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12" VerticalAlignment="Center">
             <TextBlock Text="Kho:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
-            <ComboBox x:Name="CboWarehouse" Width="220" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+            <ComboBox x:Name="CboWarehouse" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
+            <TextBlock Text="Nhà cung cấp:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+            <ComboBox x:Name="CboSupplier" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
+            <TextBlock Text="Sản phẩm:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+            <ComboBox x:Name="CboProduct" Width="200" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
+            <TextBlock Text="Top N:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+            <TextBox x:Name="TxtTopN" Width="60" Text="10" VerticalContentAlignment="Center"/>
             <TextBlock Text="Từ ngày:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <DatePicker x:Name="DpFrom" Width="150"/>
+            <DatePicker x:Name="DpFrom" Width="140"/>
             <TextBlock Text="Đến ngày:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <DatePicker x:Name="DpTo" Width="150"/>
+            <DatePicker x:Name="DpTo" Width="140"/>
             <Button Content="Làm mới" Margin="16,0,0,0" Padding="12,6" Click="BtnRefresh_Click" Background="#1976D2" Foreground="White" BorderThickness="0"/>
             <Button Content="Xuất Excel" Margin="8,0,0,0" Padding="12,6" Click="BtnExport_Click" Background="#2E7D32" Foreground="White" BorderThickness="0"/>
         </StackPanel>
@@ -60,83 +66,118 @@
             </Border>
         </Grid>
 
-        <!-- Tables -->
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="2"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="Tồn kho theo sản phẩm" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <DataGrid x:Name="DgStockByProduct" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36"
-                          CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
-                          Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" HorizontalGridLinesBrush="#E0E0E0" BorderBrush="#BBDEFB" BorderThickness="1">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="Background" Value="#E3F2FD"/>
-                            <Setter Property="Foreground" Value="#1565C0"/>
-                            <Setter Property="Padding" Value="10,8"/>
-                            <Setter Property="BorderBrush" Value="#BBDEFB"/>
-                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="MinHeight" Value="40"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="8,5"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Sản phẩm" Binding="{Binding Name}" Width="2*"/>
-                        <DataGridTextColumn Header="Nhà cung cấp" Binding="{Binding SupplierName}" Width="2*"/>
-                        <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="2*"/>
-                        <DataGridTextColumn Header="SL" Binding="{Binding Quantity}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-            <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch"/>
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="Nhập/Xuất theo ngày" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <DataGrid x:Name="DgTransactions" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36"
-                          CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
-                          Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" HorizontalGridLinesBrush="#E0E0E0" BorderBrush="#BBDEFB" BorderThickness="1">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="Background" Value="#E3F2FD"/>
-                            <Setter Property="Foreground" Value="#1565C0"/>
-                            <Setter Property="Padding" Value="10,8"/>
-                            <Setter Property="BorderBrush" Value="#BBDEFB"/>
-                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="MinHeight" Value="40"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="8,5"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Ngày" Binding="{Binding Date, StringFormat={}{0:yyyy-MM-dd}}" Width="*"/>
-                        <DataGridTextColumn Header="Nhập" Binding="{Binding Imported}" Width="*"/>
-                        <DataGridTextColumn Header="Xuất" Binding="{Binding Exported}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-        </Grid>
+        <!-- Tabs with advanced analytics -->
+        <TabControl Grid.Row="3">
+            <TabItem Header="Tồn kho">
+                <Grid Margin="0,8,0,0">
+                    <DataGrid x:Name="DgStockByProduct" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36" Margin="0"
+                              CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                              Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" HorizontalGridLinesBrush="#E0E0E0" BorderBrush="#BBDEFB" BorderThickness="1">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                                <Setter Property="Foreground" Value="#1565C0"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderBrush" Value="#BBDEFB"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="MinHeight" Value="40"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="8,5"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sản phẩm" Binding="{Binding Name}" Width="2*"/>
+                            <DataGridTextColumn Header="Nhà cung cấp" Binding="{Binding SupplierName}" Width="2*"/>
+                            <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="2*"/>
+                            <DataGridTextColumn Header="SL" Binding="{Binding Quantity}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Giao dịch theo ngày">
+                <Grid Margin="0,8,0,0">
+                    <DataGrid x:Name="DgTransactions" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36"
+                              CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                              Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" HorizontalGridLinesBrush="#E0E0E0" BorderBrush="#BBDEFB" BorderThickness="1">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                                <Setter Property="Foreground" Value="#1565C0"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="BorderBrush" Value="#BBDEFB"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="MinHeight" Value="40"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="8,5"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ngày" Binding="{Binding Date, StringFormat={}{0:yyyy-MM-dd}}" Width="*"/>
+                            <DataGridTextColumn Header="Nhập" Binding="{Binding Imported}" Width="*"/>
+                            <DataGridTextColumn Header="Xuất" Binding="{Binding Exported}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Top Nhập/Xuất">
+                <Grid Margin="0,8,0,0">
+                    <DataGrid x:Name="DgTopProducts" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36"
+                              Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" BorderBrush="#BBDEFB" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sản phẩm" Binding="{Binding Name}" Width="2*"/>
+                            <DataGridTextColumn Header="Nhà cung cấp" Binding="{Binding SupplierName}" Width="2*"/>
+                            <DataGridTextColumn Header="Nhập" Binding="{Binding Imported}" Width="*"/>
+                            <DataGridTextColumn Header="Xuất" Binding="{Binding Exported}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Top Nhà cung cấp">
+                <Grid Margin="0,8,0,0">
+                    <DataGrid x:Name="DgTopSuppliers" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36"
+                              Background="White" AlternatingRowBackground="#F8F9FA" FontSize="13" BorderBrush="#BBDEFB" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nhà cung cấp" Binding="{Binding SupplierName}" Width="2*"/>
+                            <DataGridTextColumn Header="Tổng nhập" Binding="{Binding TotalImported}" Width="*"/>
+                            <DataGridTextColumn Header="Tổng xuất" Binding="{Binding TotalExported}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Cảnh báo tồn thấp">
+                <Grid Margin="0,8,0,0">
+                    <DataGrid x:Name="DgLowStock" AutoGenerateColumns="False" IsReadOnly="True" RowHeight="36"
+                              Background="White" AlternatingRowBackground="#FFF3E0" FontSize="13" BorderBrush="#FF9800" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sản phẩm" Binding="{Binding Name}" Width="2*"/>
+                            <DataGridTextColumn Header="Nhà cung cấp" Binding="{Binding SupplierName}" Width="2*"/>
+                            <DataGridTextColumn Header="Kho" Binding="{Binding WarehouseName}" Width="2*"/>
+                            <DataGridTextColumn Header="SL" Binding="{Binding Quantity}" Width="*"/>
+                            <DataGridTextColumn Header="Ngưỡng" Binding="{Binding Threshold}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
