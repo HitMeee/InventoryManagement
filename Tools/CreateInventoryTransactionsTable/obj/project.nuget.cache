@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uMjeIgAKoIw=",
+  "dgSpecHash": "7so87qYOFro=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\cuoiki\\InventoryManagement\\Tools\\CreateInventoryTransactionsTable\\CreateInventoryTransactionsTable.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\8.0.0\\microsoft.data.sqlite.8.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.0\\microsoft.data.sqlite.core.8.0.0.nupkg.sha512",

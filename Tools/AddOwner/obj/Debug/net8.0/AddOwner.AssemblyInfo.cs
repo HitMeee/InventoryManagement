@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AddOwner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7f0b5b6a5422e43bfd8d289d2b7247ac750258a1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5498af4af8096740397cec045d47fa5c5ed2c8fb")]
 [assembly: System.Reflection.AssemblyProductAttribute("AddOwner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AddOwner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

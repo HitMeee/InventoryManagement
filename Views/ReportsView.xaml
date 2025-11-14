@@ -15,22 +15,34 @@
     <TextBlock Grid.Row="0" Text="Báo cáo &amp; Phân tích" FontSize="26" FontWeight="Bold" Foreground="#0F274C" Margin="0,0,0,12"/>
 
         <!-- Filters -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12" VerticalAlignment="Center">
-            <TextBlock Text="Kho:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
-            <ComboBox x:Name="CboWarehouse" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
-            <TextBlock Text="Nhà cung cấp:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <ComboBox x:Name="CboSupplier" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
-            <TextBlock Text="Sản phẩm:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <ComboBox x:Name="CboProduct" Width="200" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
-            <TextBlock Text="Top N:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <TextBox x:Name="TxtTopN" Width="60" Text="10" VerticalContentAlignment="Center"/>
-            <TextBlock Text="Từ ngày:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <DatePicker x:Name="DpFrom" Width="140"/>
-            <TextBlock Text="Đến ngày:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
-            <DatePicker x:Name="DpTo" Width="140"/>
-            <Button Content="Làm mới" Margin="16,0,0,0" Padding="12,6" Click="BtnRefresh_Click" Background="#1976D2" Foreground="White" BorderThickness="0"/>
-            <Button Content="Xuất Excel" Margin="8,0,0,0" Padding="12,6" Click="BtnExport_Click" Background="#2E7D32" Foreground="White" BorderThickness="0"/>
-        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- First Row: Main filters -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8" VerticalAlignment="Center">
+                <TextBlock Text="Kho:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
+                <ComboBox x:Name="CboWarehouse" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
+                <TextBlock Text="Nhà cung cấp:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+                <ComboBox x:Name="CboSupplier" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
+                <TextBlock Text="Sản phẩm:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+                <ComboBox x:Name="CboProduct" Width="200" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterChanged"/>
+            </StackPanel>
+            
+            <!-- Second Row: Date filters and buttons -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Top N:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtTopN" Width="60" Text="10" VerticalContentAlignment="Center"/>
+                <TextBlock Text="Từ ngày:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+                <DatePicker x:Name="DpFrom" Width="140"/>
+                <TextBlock Text="Đến ngày:" VerticalAlignment="Center" Margin="16,0,8,0" FontWeight="SemiBold"/>
+                <DatePicker x:Name="DpTo" Width="140"/>
+                <Button Content="Làm mới" Margin="16,0,0,0" Padding="12,6" Click="BtnRefresh_Click" Background="#1976D2" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
+                <Button Content="Xuất Excel" Margin="8,0,0,0" Padding="12,6" Click="BtnExport_Click" Background="#2E7D32" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
+            </StackPanel>
+        </Grid>
 
         <!-- KPI Cards -->
         <Grid Grid.Row="2" Margin="0,0,0,12">

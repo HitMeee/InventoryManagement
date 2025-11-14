@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TFA8RHMf2JI=",
+  "dgSpecHash": "AvczSEVP9Hk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Downloads\\CK\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Downloads\\cuoiki\\InventoryManagement\\Tools\\AddOwner\\AddOwner.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite\\8.0.8\\microsoft.data.sqlite.8.0.8.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.8\\microsoft.data.sqlite.core.8.0.8.nupkg.sha512",
